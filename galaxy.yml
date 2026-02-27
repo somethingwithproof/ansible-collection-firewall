@@ -1,3 +1,4 @@
+---
 namespace: thomasvincent
 name: firewall
 description: Enterprise-grade host firewall management (nftables first, iptables legacy, optional firewalld), with safety, rollback, and compliance mapping.
