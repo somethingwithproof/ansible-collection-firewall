@@ -36,7 +36,9 @@ jobs:
 
   molecule:
     name: Molecule
-    runs-on: [self-hosted, linux, x64]
+    runs-on: >-
+      ${{ github.event_name == 'pull_request' && 'ubuntu-24.04' ||
+          fromJSON('["self-hosted","linux","x64"]') }}
     needs: lint
     strategy:
       fail-fast: false

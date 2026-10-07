@@ -109,3 +109,6 @@ See docs/compliance.md for mappings to CIS Linux, NIST SP 800-53, ISO 27001 Anne
 ## License
 
 MIT
+
+See [CI and Sonar configuration](docs/ci.md) for hosted-analysis setup, fork safety,
+selective execution, and the future quality-gate policy.
