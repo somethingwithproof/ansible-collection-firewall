@@ -20,20 +20,28 @@ configuration, and quality-gate failures remain failures.
 
 ## Hosted configuration
 
-The audit found no matching Firewall project in Sonar organization
-`somethingwithproof`. Register this public repository there, then configure:
+The public project is registered in Sonar organization `somethingwithproof` as
+[`somethingwithproof_ansible-collection-firewall`](https://sonarcloud.io/dashboard?id=somethingwithproof_ansible-collection-firewall).
+GitHub Actions is enabled. Its configuration is:
 
 - Secret `SONAR_TOKEN`: a credential authorized to analyze that project.
-- Variable `SONAR_PROJECT_KEY`: the actual key returned by Sonar project setup.
+- Variable `SONAR_PROJECT_KEY`: `somethingwithproof_ansible-collection-firewall`.
 - Variable `ENABLE_SONAR`: `true` when hosted analysis is ready.
 
 The organization and Cloud host reuse the verified organization configuration;
-the project key is deliberately not guessed. Keep credentials out of commits.
+the repository variable supplies the registered project key. Keep credentials out of commits.
+The dedicated CI credential expires on **2027-01-05** and must be rotated before
+then. Cloud user tokens inherit the issuing account’s permissions; a separately
+named token permits independent revocation but does not provide project-only scope.
 Avoid simultaneous automatic and CI-based analysis for the same project.
 
-GitHub Actions is currently disabled for the repository. Project registration,
-credential setup, and authorized Actions enablement are still required before a
-hosted run can be claimed. Existing production-profile Ansible lint findings
+The first hosted analysis on 2026-10-07 completed and reported seven workflow
+findings. Its new-project quality gate was not computed (`NONE`), which the
+scanner correctly treated as a failed requested gate; this is not a passing
+result. After configuring a 30-day new-code period, the
+[second hosted run](https://github.com/somethingwithproof/ansible-collection-firewall/actions/runs/37591756162)
+passed. The seven existing findings remain visible: a new-code gate passing
+does not mean the entire repository has no findings. Existing production-profile Ansible lint findings
 must be repaired; the Sonar workflow does not relax that profile or turn its
 failures into passes. Privileged Molecule acceptance requires the intentionally
 selected disposable environment already documented in AGENTS.md.
@@ -49,3 +57,28 @@ validation. Keep Sonar optional until the backlog and provider configuration
 are verified. Later, expand its eligibility to all trusted PRs and add the exact
 check **Sonar Quality Gate** to the default-branch ruleset alongside correctness
 checks. The workflow cannot and does not alter branch protection.
+
+## Reproducible tooling
+
+CI uses Python 3.11 and separate hash-locked, wheel-only dependency sets for
+lint, Molecule, and packaging. Setup-python caches dependency downloads against
+each lock; installation still verifies hashes. Dependabot merge automation runs
+from trusted workflow-completion, scheduled, and manual events, reads PR/check
+metadata only, and matches the checked head commit when merging. It never
+checks out or executes a PR’s code with write credentials.
+
+Regenerate locks using the repository’s runtime selector and a Linux target:
+
+```sh
+for task in ci-lint ci-molecule ci-build; do
+  mise exec uv@0.10.6 -- uv pip compile "requirements/$task.in" \
+    --python-version 3.11 --python-platform x86_64-manylinux_2_35 \
+    --only-binary :all: --generate-hashes \
+    --output-file "requirements/$task.txt"
+done
+```
+
+Review dependency updates and validate wheel installation and existing checks.
+Do not relax production-profile lint or remove Molecule acceptance failures to
+obtain green CI. PR runs cancel obsolete validation; trusted release runs are
+not cancelled by that policy.
