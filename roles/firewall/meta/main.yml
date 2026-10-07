@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: policy
+  role_name: firewall
   namespace: thomasvincent
   author: Thomas Vincent
   description: Firewall policy abstraction layer with backend auto-detection

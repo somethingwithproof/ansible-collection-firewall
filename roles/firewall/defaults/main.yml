@@ -1,0 +1,27 @@
+---
+# Global defaults for firewall policy
+firewall_backend: auto  # auto|nftables|iptables|firewalld
+firewall_validate_only: false
+
+firewall_defaults:
+  policy_v4: drop
+  policy_v6: drop
+  allow_loopback: true
+  allow_established: true
+  drop_invalid: true
+  log_drops: true
+  log_limit: "10/second"
+  ssh_guard: true
+  ssh_ports: [22]
+
+# Object model
+firewall_objects:
+  services: {}
+  address_groups: {}
+  port_groups: {}
+
+# Ordered rules. See README for fields.
+firewall_rules: []
+
+# Facts published by the roles
+firewall_facts: {}

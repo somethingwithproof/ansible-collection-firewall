@@ -43,9 +43,10 @@ scanner correctly treated as a failed requested gate; this is not a passing
 result. After configuring a 30-day new-code period, the
 [second hosted run](https://github.com/somethingwithproof/ansible-collection-firewall/actions/runs/37591756162)
 passed. The seven existing findings remain visible: a new-code gate passing
-does not mean the entire repository has no findings. Existing production-profile Ansible lint findings
-must be repaired; the Sonar workflow does not relax that profile or turn its
-failures into passes. Privileged Molecule acceptance requires the intentionally
+does not mean the entire repository has no findings. Production-profile Ansible lint remains enforced. Public defaults live in
+the canonical `firewall` role, and `policy` imports it to preserve the existing
+entry point without suppressing the role-prefix rule. Collection runtime
+metadata declares the tested ansible-core 2.19 baseline. Privileged Molecule acceptance requires the intentionally
 selected disposable environment already documented in AGENTS.md.
 
 After merging this workflow, use GitHub's Actions page or:
@@ -98,3 +99,11 @@ Review dependency updates and validate wheel installation and existing checks.
 Do not relax production-profile lint or remove Molecule acceptance failures to
 obtain green CI. PR runs cancel obsolete validation; trusted release runs are
 not cancelled by that policy.
+
+Molecule 26 runs one selected distro per matrix job. Its obsolete `lint`
+subcommand was removed from the scenario sequence because the required CI
+`Lint` job already runs YAML and production-profile Ansible lint before
+Molecule. Staging and cleanup are temporary work; persistent configuration
+promotion and ruleset application occur only when the validated checksum changes.
+Backup remains before promotion, and rollback uses a backup only when enabled
+and a prior configuration exists.

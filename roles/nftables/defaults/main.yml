@@ -5,5 +5,4 @@ nftables_service_name: nftables
 nftables_apply_atomic: true
 nftables_backup: true
 
-# Validation mode - when true, only validates config without applying
-firewall_validate_only: false
+# The shared firewall_validate_only default belongs to the firewall role.

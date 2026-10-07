@@ -8,12 +8,13 @@ SPDX-License-Identifier: MIT
 ## Project and boundaries
 
 `galaxy.yml` defines the `thomasvincent.firewall` Ansible collection.
-`roles/policy/` resolves backend facts; `roles/nftables/` renders, validates and
+`roles/firewall/` owns public defaults and resolves backend facts;
+`roles/policy/` preserves the legacy entry point by importing it; `roles/nftables/` renders, validates and
 applies nftables configuration with a backup/rescue path. Defaults, handlers
 and the Jinja template belong to those roles. `molecule/default/` defines the
 Docker test environment, converge playbook and verifier.
 
-Both policy and nftables roles are packaged; only nftables implements a firewall
+Firewall, policy compatibility, and nftables roles are packaged; only nftables implements a firewall
 backend. Backend names in policy validation or
 README claims do not establish a working iptables/firewalld implementation.
 Likewise, configured compliance mappings are not certification or acceptance.

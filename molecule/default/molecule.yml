@@ -4,16 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu-jammy
-    image: geerlingguy/docker-ubuntu2204-ansible:latest
-    pre_build_image: true
-    privileged: true
-    command: /lib/systemd/systemd
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-  - name: debian-bookworm
-    image: geerlingguy/docker-debian12-ansible:latest
+  - name: firewall-${MOLECULE_DISTRO:-ubuntu2204}
+    image: geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest
     pre_build_image: true
     privileged: true
     command: /lib/systemd/systemd
@@ -26,10 +18,8 @@ provisioner:
     converge: converge.yml
     verify: verify.yml
   inventory:
-    host_vars:
-      ubuntu-jammy:
-        ansible_python_interpreter: /usr/bin/python3
-      debian-bookworm:
+    group_vars:
+      all:
         ansible_python_interpreter: /usr/bin/python3
 verifier:
   name: ansible
@@ -37,7 +27,6 @@ scenario:
   name: default
   test_sequence:
     - dependency
-    - lint
     - cleanup
     - destroy
     - syntax

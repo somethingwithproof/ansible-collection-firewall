@@ -38,3 +38,86 @@
       register: nftables_ssh
       changed_when: false
       failed_when: "'dport 22' not in nftables_ssh.stdout"
+
+    - name: Verify the legacy policy role preserves public facts
+      ansible.builtin.assert:
+        that:
+          - firewall_backend_resolved == 'nftables'
+          - firewall_facts.backend == 'nftables'
+          - firewall_facts.defaults.policy_v4 == 'drop'
+
+    - name: Snapshot configuration before rollback test
+      ansible.builtin.stat:
+        path: /etc/nftables.conf
+      register: firewall_test_original
+
+    - name: Create isolated failure-injection directory
+      ansible.builtin.file:
+        path: /tmp/firewall-molecule-failure
+        state: directory
+        mode: '0700'
+
+    - name: Verify failed apply restores the validated previous configuration
+      block:
+        - name: Install one-shot nft apply failure fixture
+          ansible.builtin.copy:
+            dest: /tmp/firewall-molecule-failure/nft
+            mode: '0700'
+            content: |
+              #!/bin/sh
+              if [ "$1" = '-f' ] && [ ! -f /tmp/firewall-molecule-failure/failed ]; then
+                touch /tmp/firewall-molecule-failure/failed
+                exit 1
+              fi
+              exec /usr/sbin/nft "$@"
+
+        - name: Exercise the role with a changed candidate and a failed apply
+          block:
+            - name: Apply changed rules through the real role
+              ansible.builtin.include_role:
+                name: thomasvincent.firewall.nftables
+                apply:
+                  environment:
+                    PATH: /tmp/firewall-molecule-failure:/usr/sbin:/usr/bin:/sbin:/bin
+              vars:
+                firewall_rules:
+                  - name: rollback-test
+                    direction: inbound
+                    dest_port: 42424
+                    action: accept
+
+            - name: Reject an unexpectedly successful failure fixture
+              ansible.builtin.fail:
+                msg: The one-shot apply failure did not trigger rollback.
+          rescue:
+            - name: Require the expected role failure after successful rollback
+              ansible.builtin.assert:
+                that:
+                  - "'Restored the previous configuration.' in ansible_failed_result.msg"
+
+        - name: Inspect restored configuration
+          ansible.builtin.stat:
+            path: /etc/nftables.conf
+          register: firewall_test_restored
+
+        - name: Inspect restored live ruleset
+          ansible.builtin.command:
+            cmd: nft list ruleset
+          changed_when: false
+          register: firewall_test_ruleset
+
+        - name: Assert file and live rules were restored
+          ansible.builtin.assert:
+            that:
+              - firewall_test_restored.stat.checksum == firewall_test_original.stat.checksum
+              - "'42424' not in firewall_test_ruleset.stdout"
+              - "'dport 22' in firewall_test_ruleset.stdout"
+      always:
+        - name: Remove one-shot failure fixture
+          ansible.builtin.file:
+            path: /tmp/firewall-molecule-failure
+            state: absent
+        - name: Remove failed staged candidate
+          ansible.builtin.file:
+            path: /etc/nftables.conf.staged
+            state: absent
