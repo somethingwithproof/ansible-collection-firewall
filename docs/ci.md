@@ -22,7 +22,9 @@ configuration, and quality-gate failures remain failures.
 
 The public project is registered in Sonar organization `somethingwithproof` as
 [`somethingwithproof_ansible-collection-firewall`](https://sonarcloud.io/dashboard?id=somethingwithproof_ansible-collection-firewall).
-GitHub Actions is enabled. Its configuration is:
+GitHub Actions is enabled. The project is bound to this GitHub repository,
+its main branch is `main`, and automatic analysis is disabled so CI owns scans.
+Its configuration is:
 
 - Secret `SONAR_TOKEN`: a credential authorized to analyze that project.
 - Variable `SONAR_PROJECT_KEY`: `somethingwithproof_ansible-collection-firewall`.
