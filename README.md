@@ -3,7 +3,7 @@
 [![CI](https://github.com/somethingwithproof/ansible-collection-firewall/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/somethingwithproof/ansible-collection-firewall/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
-An Ansible collection for describing host firewall policy and applying nftables configuration. Named services and address groups keep policy separate from the generated ruleset.
+An Ansible collection for describing host firewall policy and applying nftables configuration. Address groups keep policy separate from the generated ruleset.
 
 ## Implementation and boundaries
 
@@ -40,19 +40,15 @@ The filename follows the version in [galaxy.yml](galaxy.yml). Use the filename p
       ssh_guard: true
       ssh_ports: [22]
     firewall_objects:
-      services:
-        https: {ports: [443], proto: tcp}
       address_groups:
-        office: ["203.0.113.0/24"]
+        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
       port_groups: {}
     firewall_rules:
       - name: office-https
-        family: inet
-        chain: input
-        src_groups: [office]
-        services: [https]
-        proto: tcp
-        state: present
+        direction: inbound
+        source_group: office
+        dest_port: 443
+        action: accept
   roles:
     - thomasvincent.firewall.policy
     - thomasvincent.firewall.nftables
