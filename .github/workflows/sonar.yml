@@ -14,6 +14,12 @@ name: SonarQube Cloud
         default: true
         required: true
 
+      pull_request_number:
+        description: Optional same-repository PR number for a manual PR analysis
+        type: string
+        default: ''
+        required: false
+
 permissions:
   contents: read
 
@@ -65,6 +71,9 @@ jobs:
         (startsWith(github.head_ref, 'sonar/') || startsWith(github.head_ref, 'release/'))))
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: Validate requested configuration
         env:
@@ -84,6 +93,37 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Set explicit analysis identity
+        env:
+          EVENT: ${{ github.event_name }}
+          BRANCH: ${{ github.ref_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request_number }}
+          PR_BRANCH: ${{ github.head_ref }}
+          PR_BASE: ${{ github.base_ref }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$PR_NUMBER" ]]; then
+            [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]] || {
+              echo '::error::PR number must be a positive integer.'
+              exit 1
+            }
+            if [[ "$EVENT" == workflow_dispatch ]]; then
+              metadata=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+                --json isCrossRepository,headRefOid,headRefName,baseRefName)
+              if [[ $(jq -r '.isCrossRepository' <<<"$metadata") != false ||
+                    $(jq -r '.headRefOid' <<<"$metadata") != "$GITHUB_SHA" ]]; then
+                echo '::error::Manual PR analysis requires its current same-repository head branch.'
+                exit 1
+              fi
+              PR_BRANCH=$(jq -r '.headRefName' <<<"$metadata")
+              PR_BASE=$(jq -r '.baseRefName' <<<"$metadata")
+            fi
+            printf '\nsonar.pullrequest.key=%s\nsonar.pullrequest.branch=%s\nsonar.pullrequest.base=%s\n' \
+              "$PR_NUMBER" "$PR_BRANCH" "$PR_BASE" >> sonar-project.properties
+          else
+            printf '\nsonar.branch.name=%s\n' "$BRANCH" >> sonar-project.properties
+          fi
       - name: Scan and wait for the quality gate
         uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0
         env:

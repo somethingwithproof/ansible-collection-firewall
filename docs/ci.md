@@ -54,6 +54,20 @@ After merging this workflow, use GitHub's Actions page or:
 gh workflow run sonar.yml --repo somethingwithproof/ansible-collection-firewall --ref main -f run_sonar=true
 ```
 
+To analyze an existing PR manually, select its current same-repository head
+branch and supply its number. The workflow verifies its head SHA and rejects
+forks. Explicit branch/PR properties prevent manual branch scans from replacing
+main’s results:
+
+```sh
+gh workflow run sonar.yml --repo somethingwithproof/ansible-collection-firewall \
+  --ref fix/sonar-workflow-findings -f run_sonar=true -f pull_request_number=20
+```
+
+Manual branch analysis without a PR number requires the provider’s branch-analysis
+support; unsupported branches fail visibly. Main and PR scans retain distinct
+identities.
+
 Current merge policy should prioritize `Lint`, `Molecule`, and collection
 validation. Keep Sonar optional until the backlog and provider configuration
 are verified. Later, expand its eligibility to all trusted PRs and add the exact
