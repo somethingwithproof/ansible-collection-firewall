@@ -24,3 +24,5 @@ build_ignore:
   - .omc/**
   - .worktrees
   - .worktrees/**
+  - .ansible
+  - .ansible/**
