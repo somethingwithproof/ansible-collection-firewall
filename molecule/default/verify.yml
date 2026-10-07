@@ -2,7 +2,9 @@
 - name: Verify
   hosts: all
   become: true
-  gather_facts: false
+  gather_facts: true
+  vars_files:
+    - vars.yml
 
   tasks:
     - name: Check nftables service is running
@@ -38,6 +40,10 @@
       register: nftables_ssh
       changed_when: false
       failed_when: "'dport 22' not in nftables_ssh.stdout"
+
+    - name: Load the legacy entry point in the verifier process
+      ansible.builtin.include_role:
+        name: thomasvincent.firewall.policy
 
     - name: Verify the legacy policy role preserves public facts
       ansible.builtin.assert:

@@ -1,8 +1,9 @@
 # CI and Sonar analysis
 
 `CI` retains YAML lint, production-profile Ansible lint, disposable Molecule
-scenarios, and collection builds. Pull-request Molecule jobs use GitHub-hosted
-runners; trusted push/manual jobs retain the existing self-hosted runner labels.
+scenarios, and collection builds. All CI jobs use ephemeral GitHub-hosted Ubuntu 24.04 runners; the audit found
+no registered self-hosted runners. PR validation runs once per commit, and main
+pushes retain validation and packaging.
 Passing a collection build is packaging evidence, not firewall acceptance.
 
 `SonarQube Cloud` supplements these checks. The sources are both roles, workflow
