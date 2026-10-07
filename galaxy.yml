@@ -3,8 +3,10 @@ namespace: thomasvincent
 name: firewall
 description: Enterprise-grade host firewall management (nftables first, iptables legacy, optional firewalld), with safety, rollback, and compliance mapping.
 version: 0.1.0
-author: Thomas Vincent
-license: MIT
+authors:
+  - Thomas Vincent
+license:
+  - MIT
 readme: README.md
 homepage: https://github.com/thomasvincent/ansible-collection-firewall
 repository: https://github.com/thomasvincent/ansible-collection-firewall
