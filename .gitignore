@@ -24,3 +24,6 @@ __pycache__/
 
 # Build artifacts
 *.tar.gz
+
+# Local assistant state; not project source
+/.omc/

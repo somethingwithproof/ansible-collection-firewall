@@ -17,3 +17,6 @@ tags:
   - networking
   - compliance
 dependencies: {}
+build_ignore:
+  - .omc
+  - .omc/**
