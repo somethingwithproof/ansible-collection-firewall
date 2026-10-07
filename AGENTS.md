@@ -13,7 +13,8 @@ applies nftables configuration with a backup/rescue path. Defaults, handlers
 and the Jinja template belong to those roles. `molecule/default/` defines the
 Docker test environment, converge playbook and verifier.
 
-Only the nftables role is shipped here. Backend names in policy validation or
+Both policy and nftables roles are packaged; only nftables implements a firewall
+backend. Backend names in policy validation or
 README claims do not establish a working iptables/firewalld implementation.
 Likewise, configured compliance mappings are not certification or acceptance.
 

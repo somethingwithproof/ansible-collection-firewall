@@ -22,3 +22,5 @@ dependencies: {}
 build_ignore:
   - .omc
   - .omc/**
+  - .worktrees
+  - .worktrees/**
