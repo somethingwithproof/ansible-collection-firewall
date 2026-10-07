@@ -1,0 +1,5 @@
+---
+- name: Apply firewall policy
+  ansible.builtin.debug:
+    msg: "Firewall policy applied for backend: {{ firewall_backend_resolved }}"
+  listen: Apply firewall policy

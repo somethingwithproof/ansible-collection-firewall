@@ -8,9 +8,9 @@ Enterprise-grade Ansible collection for host firewall management. Primary backen
 
 ## Requirements
 
-- **Ansible version**: 2.9 or higher
+- **Ansible version**: ansible-core 2.19 or higher
 - **OS Support**: Ubuntu 20.04+, Debian 11+, RHEL 8+, CentOS 8+
-- **Python**: 3.6 or higher
+- **Controller Python**: 3.11 or higher for the locked CI tooling
 
 ## Collection Variables
 
@@ -50,7 +50,9 @@ firewall_rules:
 
 ## Dependencies
 
-None.
+The `policy` role imports this collection’s canonical `firewall` role. The
+existing `thomasvincent.firewall.policy` entry point and public `firewall_*`
+variables remain supported; no external collection is required.
 
 ## Usage
 
@@ -96,7 +98,7 @@ molecule test
 
 ## Testing
 
-Molecule scenarios for Ubuntu/Debian/RHEL. CI runs ansible-lint, yamllint, and Molecule idempotence.
+Molecule acceptance runs use Ubuntu 22.04 and Debian 12. CI runs ansible-lint, yamllint, and Molecule idempotence.
 
 ```bash
 molecule test

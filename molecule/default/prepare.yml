@@ -1,0 +1,10 @@
+---
+- name: Prepare disposable firewall test containers
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Refresh package indexes in test containers
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600

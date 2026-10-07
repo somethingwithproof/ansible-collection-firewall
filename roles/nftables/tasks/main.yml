@@ -9,36 +9,46 @@
     path: "{{ nftables_conf_path }}"
   register: nftables_config_stat
 
-- name: Backup existing config if present
-  ansible.builtin.copy:
-    src: "{{ nftables_conf_path }}"
-    dest: "{{ nftables_conf_path }}.backup-{{ ansible_date_time.epoch }}"
-    remote_src: true
-    mode: '0600'
-  when:
-    - nftables_backup | bool
-    - nftables_config_stat.stat.exists | default(false)
-
 - name: Render staged config
   ansible.builtin.template:
     src: nftables.conf.j2
     dest: "{{ nftables_conf_path }}.staged"
     mode: '0600'
-  notify: Restart nftables
+  changed_when: false
 
 - name: Validate staged config
   ansible.builtin.command:
     cmd: "nft -c -f {{ nftables_conf_path }}.staged"
   changed_when: false
 
+- name: Inspect validated staged config
+  ansible.builtin.stat:
+    path: "{{ nftables_conf_path }}.staged"
+  register: nftables_staged_stat
+
 - name: Apply nftables config atomically
+  when:
+    - not (firewall_validate_only | default(false))
+    - >-
+      not (nftables_config_stat.stat.exists | default(false)) or
+      nftables_config_stat.stat.checksum != nftables_staged_stat.stat.checksum
   block:
+    - name: Backup existing config if present
+      ansible.builtin.copy:
+        src: "{{ nftables_conf_path }}"
+        dest: "{{ nftables_conf_path }}.backup-{{ ansible_date_time.epoch }}"
+        remote_src: true
+        mode: '0600'
+      when:
+        - nftables_backup | bool
+        - nftables_config_stat.stat.exists | default(false)
     - name: Promote staged config
       ansible.builtin.copy:
         src: "{{ nftables_conf_path }}.staged"
         dest: "{{ nftables_conf_path }}"
         remote_src: true
         mode: '0600'
+      notify: Restart nftables
 
     - name: Apply nftables ruleset
       ansible.builtin.command:
@@ -53,23 +63,31 @@
         dest: "{{ nftables_conf_path }}"
         remote_src: true
         mode: '0600'
-      when: nftables_config_stat.stat.exists | default(false)
+      when:
+        - nftables_backup | bool
+        - nftables_config_stat.stat.exists | default(false)
 
     - name: Apply rollback config
       ansible.builtin.command:
         cmd: "nft -f {{ nftables_conf_path }}"
-      when: nftables_config_stat.stat.exists | default(false)
+      changed_when: true
+      when:
+        - nftables_backup | bool
+        - nftables_config_stat.stat.exists | default(false)
 
     - name: Fail with error message
       ansible.builtin.fail:
-        msg: "Failed to apply nftables config. Rolled back to previous configuration."
-
-  when: not (firewall_validate_only | default(false))
+        msg: >-
+          Failed to apply nftables config.
+          {{ 'Restored the previous configuration.' if
+             (nftables_backup | bool and nftables_config_stat.stat.exists | default(false))
+             else 'No backup was available for rollback.' }}
 
 - name: Clean up staged config
   ansible.builtin.file:
     path: "{{ nftables_conf_path }}.staged"
     state: absent
+  changed_when: false
 
 - name: Enable and start nftables service
   ansible.builtin.service:

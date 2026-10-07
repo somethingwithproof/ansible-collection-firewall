@@ -4,33 +4,8 @@
   become: true
   gather_facts: true
 
-  vars:
-    firewall_backend: nftables
-    firewall_defaults:
-      policy_v4: drop
-      policy_v6: drop
-      policy_forward: drop
-      policy_output: accept
-      allow_loopback: true
-      allow_icmp: true
-      ssh_guard: true
-      log_dropped: false
-    firewall_rules:
-      - name: allow-ssh
-        direction: inbound
-        dest_port: 22
-        action: accept
-      - name: allow-http
-        direction: inbound
-        dest_port: 80
-        action: accept
-      - name: allow-https
-        direction: inbound
-        dest_port: 443
-        action: accept
-    firewall_objects:
-      address_groups: {}
-      port_groups: {}
+  vars_files:
+    - vars.yml
 
   tasks:
     - name: Include policy role
