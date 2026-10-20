@@ -78,7 +78,7 @@ checks. The workflow cannot and does not alter branch protection.
 
 ## Reproducible tooling
 
-CI uses Python 3.11 and separate hash-locked, wheel-only dependency sets for
+CI uses Python 3.13 and separate hash-locked, wheel-only dependency sets for
 lint, Molecule, and packaging. Setup-python caches dependency downloads against
 each lock; installation still verifies hashes. Dependabot merge automation runs
 from trusted workflow-completion, scheduled, and manual events, reads PR/check
@@ -90,7 +90,7 @@ Regenerate locks using the repository’s runtime selector and a Linux target:
 ```sh
 for task in ci-lint ci-molecule ci-build; do
   mise exec uv@0.10.6 -- uv pip compile "requirements/$task.in" \
-    --python-version 3.11 --python-platform x86_64-manylinux_2_35 \
+    --python-version 3.13 --python-platform x86_64-manylinux_2_35 \
     --only-binary :all: --generate-hashes \
     --output-file "requirements/$task.txt"
 done
