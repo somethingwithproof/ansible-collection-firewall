@@ -6,6 +6,11 @@
   vars_files:
     - vars.yml
 
+  vars:
+    firewall_test_config_path: >-
+      {{ "/etc/sysconfig/nftables.conf" if ansible_facts.os_family == "RedHat"
+         else "/etc/nftables.conf" }}
+
   tasks:
     - name: Check nftables service is running
       ansible.builtin.service:
@@ -17,13 +22,13 @@
 
     - name: Check nftables config file exists
       ansible.builtin.stat:
-        path: /etc/nftables.conf
+        path: "{{ firewall_test_config_path }}"
       register: nftables_conf
       failed_when: not nftables_conf.stat.exists
 
     - name: Check nftables config file permissions
       ansible.builtin.stat:
-        path: /etc/nftables.conf
+        path: "{{ firewall_test_config_path }}"
       register: nftables_conf_perms
       failed_when: nftables_conf_perms.stat.mode != '0600'
 
@@ -54,7 +59,7 @@
 
     - name: Snapshot configuration before rollback test
       ansible.builtin.stat:
-        path: /etc/nftables.conf
+        path: "{{ firewall_test_config_path }}"
       register: firewall_test_original
 
     - name: Create isolated failure-injection directory
@@ -103,7 +108,7 @@
 
         - name: Inspect restored configuration
           ansible.builtin.stat:
-            path: /etc/nftables.conf
+            path: "{{ firewall_test_config_path }}"
           register: firewall_test_restored
 
         - name: Inspect restored live ruleset
@@ -125,5 +130,5 @@
             state: absent
         - name: Remove failed staged candidate
           ansible.builtin.file:
-            path: /etc/nftables.conf.staged
+            path: "{{ firewall_test_config_path }}.staged"
             state: absent
