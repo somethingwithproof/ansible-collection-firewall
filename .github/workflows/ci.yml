@@ -53,7 +53,12 @@ jobs:
       matrix:
         distro:
           - ubuntu2204
+          - ubuntu2404
+          - ubuntu2604
           - debian12
+          - debian13
+          - rockylinux9
+          - rockylinux10
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

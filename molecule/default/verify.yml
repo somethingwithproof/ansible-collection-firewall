@@ -6,6 +6,11 @@
   vars_files:
     - vars.yml
 
+  vars:
+    firewall_test_config_path: >-
+      {{ "/etc/sysconfig/nftables.conf" if ansible_facts.os_family == "RedHat"
+         else "/etc/nftables.conf" }}
+
   tasks:
     - name: Check nftables service is running
       ansible.builtin.service:
@@ -17,13 +22,13 @@
 
     - name: Check nftables config file exists
       ansible.builtin.stat:
-        path: /etc/nftables.conf
+        path: "{{ firewall_test_config_path }}"
       register: nftables_conf
       failed_when: not nftables_conf.stat.exists
 
     - name: Check nftables config file permissions
       ansible.builtin.stat:
-        path: /etc/nftables.conf
+        path: "{{ firewall_test_config_path }}"
       register: nftables_conf_perms
       failed_when: nftables_conf_perms.stat.mode != '0600'
 
@@ -52,9 +57,37 @@
           - firewall_facts.backend == 'nftables'
           - firewall_facts.defaults.policy_v4 == 'drop'
 
+    - name: Verify a differing legacy EL configuration cannot become a wrong rollback source
+      when: ansible_facts.os_family == 'RedHat'
+      block:
+        - name: Create a distinct legacy configuration in the disposable container
+          ansible.builtin.copy:
+            dest: /etc/nftables.conf
+            content: "# Legacy rules require explicit migration.\n"
+            mode: '0600'
+
+        - name: Require rejection before any candidate is promoted
+          block:
+            - name: Exercise the migration guard through the real role
+              ansible.builtin.include_role:
+                name: thomasvincent.firewall.nftables
+
+            - name: Reject an accepted implicit migration
+              ansible.builtin.fail:
+                msg: The role accepted a different legacy rollback source.
+          rescue:
+            - name: Require the expected migration guard
+              ansible.builtin.assert:
+                that: "'different legacy /etc/nftables.conf' in ansible_failed_result.msg"
+      always:
+        - name: Remove the disposable legacy migration fixture
+          ansible.builtin.file:
+            path: /etc/nftables.conf
+            state: absent
+
     - name: Snapshot configuration before rollback test
       ansible.builtin.stat:
-        path: /etc/nftables.conf
+        path: "{{ firewall_test_config_path }}"
       register: firewall_test_original
 
     - name: Create isolated failure-injection directory
@@ -103,7 +136,7 @@
 
         - name: Inspect restored configuration
           ansible.builtin.stat:
-            path: /etc/nftables.conf
+            path: "{{ firewall_test_config_path }}"
           register: firewall_test_restored
 
         - name: Inspect restored live ruleset
@@ -125,5 +158,25 @@
             state: absent
         - name: Remove failed staged candidate
           ansible.builtin.file:
-            path: /etc/nftables.conf.staged
+            path: "{{ firewall_test_config_path }}.staged"
             state: absent
+
+- name: Verify the direct backend gathers its required facts
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Clear facts inherited from earlier verifier plays
+      ansible.builtin.meta: clear_facts
+
+    - name: Apply the backend without play-level gathering or backups
+      ansible.builtin.include_role:
+        name: thomasvincent.firewall.nftables
+      vars:
+        nftables_backup: false
+
+    - name: Require distribution discovery for the native service path
+      ansible.builtin.assert:
+        that: ansible_facts.os_family in ['Debian', 'RedHat']

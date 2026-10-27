@@ -1,6 +1,12 @@
 ---
 profile: production
 
+# The built-in lint release list predates these maintained controller lines.
+# Runtime CI uses core 2.21; core 2.20 adds Python 3.14 managed-node support.
+supported_ansible_also:
+  - "2.20"
+  - "2.21"
+
 exclude_paths:
   - .github/
   - molecule/

@@ -66,3 +66,30 @@ The [CI workflow](.github/workflows/ci.yml) and [Molecule scenarios](molecule) d
 ## Compliance and license
 
 The earlier README referenced a compliance-mapping document that is not present in this checkout. No certification or framework compliance is claimed here. The collection uses the [MIT license](LICENSE); [galaxy.yml](galaxy.yml) records the package metadata.
+
+## Operating-system support
+
+The nftables backend is tested with Ansible core 2.21 on Ubuntu 22.04,
+24.04 and 26.04 LTS, Debian 12 and 13, and Rocky Linux 9 and 10. Use a
+maintained controller with core 2.20 or newer for Ubuntu 26.04's Python 3.14.
+
+Molecule checks convergence, a second run with no changes, the loaded ruleset,
+an SSH port 22 allow rule, configuration permissions and rollback after an injected apply
+failure. Enterprise Linux uses `/etc/sysconfig/nftables.conf`; Debian and
+Ubuntu use `/etc/nftables.conf`. `nftables_conf_path` remains configurable.
+Configure the native nftables service to load any custom path before using
+that override: the role restarts the service, which otherwise loads its stock
+file and can replace the intended ruleset.
+
+On Enterprise Linux, a differing legacy `/etc/nftables.conf` stops the role
+before promotion. Back up both files, then move the validated previous
+configuration to the native service path. Alternatively, explicitly retain
+the legacy path and configure the service accordingly. Do not leave a stale
+copy at `/etc/nftables.conf`: a differing file there triggers the guard on
+later runs. The previous rules remain available at the selected path as the
+rollback source during an upgrade.
+
+Rocky Linux exercises the Enterprise Linux package and service path. These
+container tests do not certify RHEL subscriptions or a production kernel.
+Ubuntu 20.04 without extended support, Debian 11 and EL8's older Python are
+outside the current test matrix.
