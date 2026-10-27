@@ -82,10 +82,12 @@ that override: the role restarts the service, which otherwise loads its stock
 file and can replace the intended ruleset.
 
 On Enterprise Linux, a differing legacy `/etc/nftables.conf` stops the role
-before promotion. Copy the validated previous configuration to the native
-service path first, or explicitly retain the legacy path and configure the
-service accordingly. This keeps the previous rules available as the rollback
-source during an upgrade.
+before promotion. Back up both files, then move the validated previous
+configuration to the native service path. Alternatively, explicitly retain
+the legacy path and configure the service accordingly. Do not leave a stale
+copy at `/etc/nftables.conf`: a differing file there triggers the guard on
+later runs. The previous rules remain available at the selected path as the
+rollback source during an upgrade.
 
 Rocky Linux exercises the Enterprise Linux package and service path. These
 container tests do not certify RHEL subscriptions or a production kernel.

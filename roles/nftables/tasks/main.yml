@@ -32,8 +32,9 @@
         (nftables_config_stat.stat.exists and
          nftables_legacy_config.stat.checksum == nftables_config_stat.stat.checksum)
     fail_msg: >-
-      A different legacy /etc/nftables.conf exists. Copy the validated previous
-      configuration to /etc/sysconfig/nftables.conf before rerunning, or pin
+      A different legacy /etc/nftables.conf exists. Back up both files and move
+      the validated previous configuration to /etc/sysconfig/nftables.conf
+      before rerunning, or pin
       nftables_conf_path and configure the native service to load that path.
       The role will not choose a different rollback source implicitly.
   when:
