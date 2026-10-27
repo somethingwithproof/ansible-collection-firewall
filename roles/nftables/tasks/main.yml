@@ -1,4 +1,11 @@
 ---
+- name: Gather facts needed for service paths and rollback timestamps
+  ansible.builtin.setup:
+    gather_subset: ['!all', '!min', distribution, date_time]
+  when: >-
+    ansible_facts.os_family is not defined or
+    (nftables_backup | bool and ansible_date_time is not defined)
+
 - name: Ensure nftables package present
   ansible.builtin.package:
     name: nftables
@@ -8,6 +15,30 @@
   ansible.builtin.stat:
     path: "{{ nftables_conf_path }}"
   register: nftables_config_stat
+
+- name: Inspect the legacy Enterprise Linux configuration before migration
+  ansible.builtin.stat:
+    path: /etc/nftables.conf
+  register: nftables_legacy_config
+  when:
+    - ansible_facts.os_family == 'RedHat'
+    - nftables_conf_path == '/etc/sysconfig/nftables.conf'
+
+- name: Require an explicit migration of differing legacy rules
+  ansible.builtin.assert:
+    that:
+      - >-
+        not nftables_legacy_config.stat.exists or
+        (nftables_config_stat.stat.exists and
+         nftables_legacy_config.stat.checksum == nftables_config_stat.stat.checksum)
+    fail_msg: >-
+      A different legacy /etc/nftables.conf exists. Copy the validated previous
+      configuration to /etc/sysconfig/nftables.conf before rerunning, or pin
+      nftables_conf_path and configure the native service to load that path.
+      The role will not choose a different rollback source implicitly.
+  when:
+    - ansible_facts.os_family == 'RedHat'
+    - nftables_conf_path == '/etc/sysconfig/nftables.conf'
 
 - name: Render staged config
   ansible.builtin.template:

@@ -57,6 +57,34 @@
           - firewall_facts.backend == 'nftables'
           - firewall_facts.defaults.policy_v4 == 'drop'
 
+    - name: Verify a differing legacy EL configuration cannot become a wrong rollback source
+      when: ansible_facts.os_family == 'RedHat'
+      block:
+        - name: Create a distinct legacy configuration in the disposable container
+          ansible.builtin.copy:
+            dest: /etc/nftables.conf
+            content: "# Legacy rules require explicit migration.\n"
+            mode: '0600'
+
+        - name: Require rejection before any candidate is promoted
+          block:
+            - name: Exercise the migration guard through the real role
+              ansible.builtin.include_role:
+                name: thomasvincent.firewall.nftables
+
+            - name: Reject an accepted implicit migration
+              ansible.builtin.fail:
+                msg: The role accepted a different legacy rollback source.
+          rescue:
+            - name: Require the expected migration guard
+              ansible.builtin.assert:
+                that: "'different legacy /etc/nftables.conf' in ansible_failed_result.msg"
+      always:
+        - name: Remove the disposable legacy migration fixture
+          ansible.builtin.file:
+            path: /etc/nftables.conf
+            state: absent
+
     - name: Snapshot configuration before rollback test
       ansible.builtin.stat:
         path: "{{ firewall_test_config_path }}"
