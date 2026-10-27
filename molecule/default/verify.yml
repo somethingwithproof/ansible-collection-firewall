@@ -160,3 +160,23 @@
           ansible.builtin.file:
             path: "{{ firewall_test_config_path }}.staged"
             state: absent
+
+- name: Verify the direct backend gathers its required facts
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Clear facts inherited from earlier verifier plays
+      ansible.builtin.meta: clear_facts
+
+    - name: Apply the backend without play-level gathering or backups
+      ansible.builtin.include_role:
+        name: thomasvincent.firewall.nftables
+      vars:
+        nftables_backup: false
+
+    - name: Require distribution discovery for the native service path
+      ansible.builtin.assert:
+        that: ansible_facts.os_family in ['Debian', 'RedHat']
