@@ -20,6 +20,7 @@ provisioner:
   inventory:
     group_vars:
       all:
+        ansible_become: false  # Docker transport already runs as root.
         ansible_python_interpreter: /usr/bin/python3
 verifier:
   name: ansible
