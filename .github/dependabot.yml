@@ -1,6 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: 7
     directory: "/"
     schedule:
       interval: "weekly"
@@ -15,6 +17,8 @@ updates:
           - "minor"
           - "patch"
   - package-ecosystem: "pip"
+    cooldown:
+      default-days: 7
     directory: "/requirements"
     schedule:
       interval: "weekly"
