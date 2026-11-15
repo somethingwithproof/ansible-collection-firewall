@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Thomas Vincent <thomasvincent@gmail.com>
+# SPDX-License-Identifier: MIT
+
 ---
 - name: Gather facts needed for service paths and rollback timestamps
   ansible.builtin.setup:
