@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) は公開デフォルト値とバックエンドの検証を担い、[policy](../../../roles/policy/tasks/main.yml) はこれをインポートすることで従来のエントリーポイントを維持します。
 - [nftables](../../../roles/nftables/tasks/main.yml) は nftables のインストール、設定のステージング、`nft -c -f` による検証、および `nft -f` による適用を行います。
-- 適用ブロックは、以前の有効な設定が存在していた場合、失敗時にその設定への復元を試みます。バックアップの確保と復旧用のアクセス経路の維持は、引き続き運用上の要件となります。
-- サポートされるポリシーフィールドは、[テンプレート](../../../roles/nftables/templates/nftables.conf.j2) と [デフォルト設定](../../../roles/policy/defaults/main.yml) で定義されています。
+- **`nftables_backup: true`** — 適用ブロックは、以前の有効な設定が存在していた場合、失敗時にその設定への復元を試みます。バックアップの確保と復旧用のアクセス経路の維持は、引き続き運用上の要件となります。
+- サポートされるポリシーフィールドは、[テンプレート](../../../roles/nftables/templates/nftables.conf.j2) と [デフォルト設定](../../../roles/firewall/defaults/main.yml) で定義されています。
 
 このコレクションには `firewall`、`policy`、`nftables` が含まれていますが、ファイアウォールバックエンドを実装しているのは `nftables` のみです。ポリシー検証では iptables および firewalld のバックエンド名も受け付けますが、対応するバックエンドロールは本コレクションには含まれていません。テンプレート内の SSH ルールはロックアウトを防ぐ保証にはなりません。検証専用モードでもパッケージのインストールや設定・サービスタスクは実行されるため、副作用のないドライランではありません。
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # 実際のオフィスのネットワークに置き換えてください (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

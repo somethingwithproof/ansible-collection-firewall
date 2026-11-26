@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) besit openbare verstekwaardes en agterkant-validering; [policy](../../../roles/policy/tasks/main.yml) behou die ouer toegangspunt deur dit in te voer.
 - [nftables](../../../roles/nftables/tasks/main.yml) installeer nftables, berei konfigurasie voor, valideer dit met `nft -c -f`, en pas dit toe met `nft -f`.
-- Die toepassingsblok poog om 'n vorige konfigurasie ná 'n mislukking te herstel indien een bestaan het. Rugsteunbeskikbaarheid en hersteltoegang bly bedryfsvereistes.
-- Die [sjabloon](../../../roles/nftables/templates/nftables.conf.j2) en [verstekwaardes](../../../roles/policy/defaults/main.yml) definieer ondersteunde beleidsvelde.
+- **`nftables_backup: true`** — Die toepassingsblok poog om 'n vorige konfigurasie ná 'n mislukking te herstel indien een bestaan het. Rugsteunbeskikbaarheid en hersteltoegang bly bedryfsvereistes.
+- Die [sjabloon](../../../roles/nftables/templates/nftables.conf.j2) en [verstekwaardes](../../../roles/firewall/defaults/main.yml) definieer ondersteunde beleidsvelde.
 
 Die versameling verpak `firewall`, `policy` en `nftables`; slegs `nftables` implementeer 'n brandmuur-agterkant. Agterkantname vir iptables en firewalld word deur beleidsvalidering aanvaar, maar geen ooreenstemmende agterkantrolle word hier verskaf nie. 'n SSH-reël in die sjabloon is nie 'n waarborg teen uitsluiting nie. Slegs-valideringsmodus installeer steeds pakkette en voer konfigurasie-/dienstake uit; dit is nie 'n newe-effekvrye proeflopie nie.
 
@@ -57,7 +57,7 @@ Die lêernaam volg die weergawe in [galaxy.yml](../../../galaxy.yml). Gebruik di
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Vervang met jou kantoornetwerk (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

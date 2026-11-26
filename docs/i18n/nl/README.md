@@ -25,8 +25,8 @@ Een Ansible-collectie voor het beschrijven van host-firewallbeleid en het toepas
 
 - [firewall](../../../roles/firewall/tasks/main.yml) beheert de publieke standaardwaarden en backendvalidatie; [policy](../../../roles/policy/tasks/main.yml) behoudt het oude startpunt door dit te importeren.
 - [nftables](../../../roles/nftables/tasks/main.yml) installeert nftables, zet de configuratie klaar, valideert deze met `nft -c -f` en past deze toe met `nft -f`.
-- Het toepassingsblok probeert na een fout een eerdere configuratie te herstellen indien deze bestond. De beschikbaarheid van back-ups en hersteltoegang blijven operationele vereisten.
-- Het [sjabloon](../../../roles/nftables/templates/nftables.conf.j2) en de [standaardwaarden](../../../roles/policy/defaults/main.yml) definiëren de ondersteunde beleidsvelden.
+- **`nftables_backup: true`** — Het toepassingsblok probeert na een fout een eerdere configuratie te herstellen indien deze bestond. De beschikbaarheid van back-ups en hersteltoegang blijven operationele vereisten.
+- Het [sjabloon](../../../roles/nftables/templates/nftables.conf.j2) en de [standaardwaarden](../../../roles/firewall/defaults/main.yml) definiëren de ondersteunde beleidsvelden.
 
 De collectie bevat de rollen `firewall`, `policy` en `nftables`; alleen `nftables` implementeert een firewall-backend. Backendnamen voor iptables en firewalld worden geaccepteerd door de beleidsvalidatie, maar bijbehorende backendrollen worden hier niet meegeleverd. Een SSH-regel in het sjabloon is geen garantie tegen buitensluiting. De modus alleen-valideren installeert nog steeds pakketten en voert configuratie- en servicetaken uit; het is geen bijwerkingenvrije dry run.
 
@@ -57,7 +57,7 @@ De bestandsnaam volgt de versie in [galaxy.yml](../../../galaxy.yml). Gebruik de
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Vervang dit door het eigen kantoornetwerk (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

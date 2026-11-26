@@ -25,8 +25,8 @@ Ingqokelela ye-Ansible yokuchaza umgaqo-nkqubo we-firewall yomncedisi kunye noku
 
 - I-[firewall](../../../roles/firewall/tasks/main.yml) ilawula amaxabiso asisiseko esidlangalaleni kunye nokuqinisekiswa kwe-backend; i-[policy](../../../roles/policy/tasks/main.yml) igcina indawo yokungena yakudala ngokuyingenisa.
 - I-[nftables](../../../roles/nftables/tasks/main.yml) ifaka i-nftables, ilungiselela uqwalaselo, iluqinisekisa nge-`nft -c -f`, kwaye ilusebenzisa nge-`nft -f`.
-- Icandelo lokusebenzisa uqwalaselo lizama ukubuyisela uqwalaselo lwangaphambili emva kokusilela ukuba belukhona. Ukufumaneka kwekope yokugcina kunye nofikelelo lokubuyisela kuhlala kuyimfuneko yokusebenza.
-- [Itemplate](../../../roles/nftables/templates/nftables.conf.j2) kunye [namaxabiso asisiseko](../../../roles/policy/defaults/main.yml) zichaza imihlaba yomgaqo-nkqubo exhaswayo.
+- **`nftables_backup: true`** — Icandelo lokusebenzisa uqwalaselo lizama ukubuyisela uqwalaselo lwangaphambili emva kokusilela ukuba belukhona. Ukufumaneka kwekope yokugcina kunye nofikelelo lokubuyisela kuhlala kuyimfuneko yokusebenza.
+- [Itemplate](../../../roles/nftables/templates/nftables.conf.j2) kunye [namaxabiso asisiseko](../../../roles/firewall/defaults/main.yml) zichaza imihlaba yomgaqo-nkqubo exhaswayo.
 
 Le ngqokelela iquka i-`firewall`, i-`policy`, kunye ne-`nftables`; kuphela yi-`nftables` ephumeza i-backend ye-firewall. Amagama e-backend e-iptables kunye ne-firewalld ayamkelwa kuqinisekiso lomgaqo-nkqubo, kodwa akukho zindima ze-backend ezihambelana nazo ezithunyelwa apha. Umthetho we-SSH okwitemplate awusoze ube sisiqinisekiso sokuthintela ukuvalelwa ngaphandle. Imo yokuqinisekisa kuphela isafaka iipakethe kwaye yenze imisebenzi yoqwalaselo neenkonzo; ayisiyiyo imeko yovavanyo engenaziphumo zotshintsho.
 
@@ -57,7 +57,7 @@ Igama lefayile lilandela inguqulelo ekwi-[galaxy.yml](../../../galaxy.yml). Sebe
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Faka inethiwekhi yeofisi yakho endaweni yalo mzekelo (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

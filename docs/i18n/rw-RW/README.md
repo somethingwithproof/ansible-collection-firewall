@@ -25,8 +25,8 @@ Itsinda rya Ansible rigenewe gusobanura politiki ya firewall y'imashini no gushy
 
 - [firewall](../../../roles/firewall/tasks/main.yml) igenga indangagaciro mbanziriza rusange n'igenzura rya backend; [policy](../../../roles/policy/tasks/main.yml) igumishaho uburyo bwo kwinjira bwa kera binyuze mu kuyitumiza.
 - [nftables](../../../roles/nftables/tasks/main.yml) ishyiraho nftables, igategura igenamiterere, ikarigenzura ikoresheje `nft -c -f`, kandi ikarishyira mu bikorwa ikoresheje `nft -f`.
-- Igice cyo gushyira mu bikorwa kigerageza gusubizaho igenamiterere ryari rihari mbere nyuma yo gutsindwa iyo ryari rihari. Kuboneka kw'ikopi y'ububiko n'uburyo bwo kugarura sisitemu bikomeza kuba ibisabwa mu mikorere.
-- [Inyandikorugero](../../../roles/nftables/templates/nftables.conf.j2) n'[indangagaciro mbanziriza](../../../roles/policy/defaults/main.yml) bigaragaza ibice bya politiki byemewe.
+- **`nftables_backup: true`** — Igice cyo gushyira mu bikorwa kigerageza gusubizaho igenamiterere ryari rihari mbere nyuma yo gutsindwa iyo ryari rihari. Kuboneka kw'ikopi y'ububiko n'uburyo bwo kugarura sisitemu bikomeza kuba ibisabwa mu mikorere.
+- [Inyandikorugero](../../../roles/nftables/templates/nftables.conf.j2) n'[indangagaciro mbanziriza](../../../roles/firewall/defaults/main.yml) bigaragaza ibice bya politiki byemewe.
 
 Iri tsinda rikubiyemo `firewall`, `policy`, na `nftables`; `nftables` yonyine ni yo ishyira mu bikorwa backend ya firewall. Amazina ya backend ya iptables na firewalld yemerewe mu igenzura rya politiki, ariko nta nshingano za backend zijyanye na byo zitangwa hano. Itegeko rya SSH riri mu nyandikorugero si icyizere cyo kutafungirwa hanze. Uburyo bwo kugenzura gusa bukomeza gushyiraho paki kandi bugakora ibikorwa by'igenamiterere/serivisi; si igerageza ridahindura na kimwe.
 
@@ -57,7 +57,7 @@ Izina ry'idosiye rikurikiza verisiyo iri muri [galaxy.yml](../../../galaxy.yml).
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Simbuza uru rugero n’urusobe rw’ibiro byawe (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

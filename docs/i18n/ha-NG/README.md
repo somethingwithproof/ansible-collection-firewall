@@ -25,8 +25,8 @@ Tarin Ansible don bayyana manufar firewall ta na'ura da aiwatar da saitin nftabl
 
 - [firewall](../../../roles/firewall/tasks/main.yml) ne ke da alhakin saitunan tsoho na jama'a da tantance backend; [policy](../../../roles/policy/tasks/main.yml) yana kiyaye tsohuwar hanyar shiga ta hanyar shigo da shi.
 - [nftables](../../../roles/nftables/tasks/main.yml) yana girka nftables, ya shirya saitin, ya tantance shi da `nft -c -f`, sannan ya aiwatar da shi da `nft -f`.
-- Sashen aiwatarwa yana ƙoƙarin mayar da tsohon saiti bayan gazawa idan akwai shi a baya. Samun ajiyar baya (backup) da hanyar dawo da samun dama sun ci gaba da zama buƙatun aiki.
-- [Samfuri](../../../roles/nftables/templates/nftables.conf.j2) da [saitunan tsoho](../../../roles/policy/defaults/main.yml) suna bayyana filayen manufar da ake goyon baya.
+- **`nftables_backup: true`** — Sashen aiwatarwa yana ƙoƙarin mayar da tsohon saiti bayan gazawa idan akwai shi a baya. Samun ajiyar baya (backup) da hanyar dawo da samun dama sun ci gaba da zama buƙatun aiki.
+- [Samfuri](../../../roles/nftables/templates/nftables.conf.j2) da [saitunan tsoho](../../../roles/firewall/defaults/main.yml) suna bayyana filayen manufar da ake goyon baya.
 
 Tarin ya ƙunshi `firewall`, `policy`, da `nftables`; `nftables` kaɗai ne ke aiwatar da backend na firewall. Tantancewar manufa tana karɓar sunayen backend na iptables da firewalld, amma babu ayyukan (roles) backend masu dacewa da aka haɗa a nan. Ƙa'idar SSH a cikin samfurin ba tabbaci ba ce cewa ba za a kulle hanyar shiga ba. Yanayin tantancewa kaɗai yana ci gaba da girka fakiti tare da gudanar da ayyukan saiti da sabis; ba gwajin bushe (dry run) ba ne marar tasiri.
 
@@ -57,7 +57,7 @@ Sunan fayil ɗin yana bin sigar da ke cikin [galaxy.yml](../../../galaxy.yml). Y
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Sauya wannan da cibiyar sadarwar ofishinku (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

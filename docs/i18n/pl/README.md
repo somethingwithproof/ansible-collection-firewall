@@ -25,8 +25,8 @@ Kolekcja Ansible do opisywania polityki zapory sieciowej hosta i wdrażania konf
 
 - Rola [firewall](../../../roles/firewall/tasks/main.yml) odpowiada za publiczne wartości domyślne i walidację backendu; rola [policy](../../../roles/policy/tasks/main.yml) zachowuje starszy punkt wejścia, importując ją.
 - Rola [nftables](../../../roles/nftables/tasks/main.yml) instaluje nftables, przygotowuje konfigurację przejściową, waliduje ją za pomocą `nft -c -f` i stosuje za pomocą `nft -f`.
-- Blok stosowania konfiguracji podejmuje próbę przywrócenia poprzedniej konfiguracji w razie niepowodzenia, jeśli taka istniała. Dostępność kopii zapasowej oraz awaryjnego dostępu pozostają wymaganiami operacyjnymi.
-- [Szablon](../../../roles/nftables/templates/nftables.conf.j2) i [wartości domyślne](../../../roles/policy/defaults/main.yml) definiują obsługiwane pola polityki.
+- **`nftables_backup: true`** — Blok stosowania konfiguracji podejmuje próbę przywrócenia poprzedniej konfiguracji w razie niepowodzenia, jeśli taka istniała. Dostępność kopii zapasowej oraz awaryjnego dostępu pozostają wymaganiami operacyjnymi.
+- [Szablon](../../../roles/nftables/templates/nftables.conf.j2) i [wartości domyślne](../../../roles/firewall/defaults/main.yml) definiują obsługiwane pola polityki.
 
 Kolekcja zawiera role `firewall`, `policy` oraz `nftables`; jedynie `nftables` implementuje backend zapory sieciowej. Nazwy backendów dla iptables i firewalld są akceptowane podczas walidacji polityki, jednak nie są tu dostarczane odpowiadające im role backendów. Reguła SSH w szablonie nie gwarantuje ochrony przed utratą dostępu. Tryb samej walidacji nadal instaluje pakiety i wykonuje zadania konfiguracji oraz usług; nie jest to uruchomienie próbne pozbawione efektów ubocznych.
 
@@ -57,7 +57,7 @@ Nazwa pliku odpowiada wersji w [galaxy.yml](../../../galaxy.yml). Jeśli ta wers
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Zastąp siecią swojego biura (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

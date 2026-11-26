@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) ni ó ni àwọn àṣàyàn àkọ́kọ́ fún gbogbo ènìyàn àti ìjẹ́rìísí ẹ̀yìn-ètò; [policy](../../../roles/policy/tasks/main.yml) máa ń pa ojú-ọ̀nà ìbẹ̀rẹ̀ àtijọ́ mọ́ nípa gbígbé e wọlé.
 - [nftables](../../../roles/nftables/tasks/main.yml) máa ń fi nftables sórí ẹ̀rọ, ó ń gbé ìṣètò kalẹ̀ fún ìpalẹ̀mọ́, ó ń jẹ́rìísí rẹ̀ pẹ̀lú `nft -c -f`, ó sì ń mú un ṣiṣẹ́ pẹ̀lú `nft -f`.
-- Abala ìmúlò máa ń gbìyànjú láti dá ìṣètò tẹ́lẹ̀ padà lẹ́yìn ìkùnà nígbà tí ọ̀kan bá wà tẹ́lẹ̀. Wíwà àdàkọ ààbò àti àǹfààní ìgbàpadà ṣì jẹ́ àwọn ohun tí a nílò nínú ìṣiṣẹ́.
-- [Àwòkọ́ṣe](../../../roles/nftables/templates/nftables.conf.j2) àti [àwọn àṣàyàn àkọ́kọ́](../../../roles/policy/defaults/main.yml) ni ó ń ṣàlàyé àwọn pápá ìlànà tí a ṣètìlẹ́yìn fún.
+- **`nftables_backup: true`** — Abala ìmúlò máa ń gbìyànjú láti dá ìṣètò tẹ́lẹ̀ padà lẹ́yìn ìkùnà nígbà tí ọ̀kan bá wà tẹ́lẹ̀. Wíwà àdàkọ ààbò àti àǹfààní ìgbàpadà ṣì jẹ́ àwọn ohun tí a nílò nínú ìṣiṣẹ́.
+- [Àwòkọ́ṣe](../../../roles/nftables/templates/nftables.conf.j2) àti [àwọn àṣàyàn àkọ́kọ́](../../../roles/firewall/defaults/main.yml) ni ó ń ṣàlàyé àwọn pápá ìlànà tí a ṣètìlẹ́yìn fún.
 
 Àkójọpọ̀ yìí kó `firewall`, `policy`, àti `nftables` jọ; `nftables` nìkan ni ó ń ṣe ìmúṣẹ ẹ̀yìn-ètò ògiri-iná. Ìjẹ́rìísí ìlànà máa ń gba àwọn orúkọ ẹ̀yìn-ètò fún iptables àti firewalld, ṣùgbọ́n kò sí àwọn ipa ẹ̀yìn-ètò tí ó bá wọn mu tí a fi ránṣẹ́ níbí. Òfin SSH nínú àwòkọ́ṣe kì í ṣe ìdánilójú pé ìtìpa-kúrò kò ní ṣẹlẹ̀. Ipò ìjẹ́rìísí-nìkan ṣì ń fi àwọn àpò sórí ẹ̀rọ, ó sì ń ṣe àwọn iṣẹ́ ìṣètò/iṣẹ́-ìpèsè; kì í ṣe ìdánwò láìsí ipa-ẹ̀gbẹ́.
 
@@ -57,7 +57,7 @@ Orúkọ fáìlì náà tẹ̀lé ẹ̀yà tí ó wà nínú [galaxy.yml](../../
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Fi nọ́ńbà nẹ́tíwọ́ọ̀kì ọ́fíìsì rẹ sí ibí yìí (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

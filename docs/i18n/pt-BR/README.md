@@ -25,8 +25,8 @@ Uma coleção Ansible para descrever políticas de firewall de host e aplicar co
 
 - [firewall](../../../roles/firewall/tasks/main.yml) define os valores padrão públicos e a validação de backend; [policy](../../../roles/policy/tasks/main.yml) preserva o ponto de entrada legado importando-a.
 - [nftables](../../../roles/nftables/tasks/main.yml) instala o nftables, prepara a configuração em área temporária, valida-a com `nft -c -f` e aplica-a com `nft -f`.
-- O bloco de aplicação tenta restaurar uma configuração anterior após uma falha, quando ela existir. A disponibilidade de backups e o acesso de recuperação continuam sendo requisitos operacionais.
-- O [template](../../../roles/nftables/templates/nftables.conf.j2) e os [valores padrão](../../../roles/policy/defaults/main.yml) definem os campos de política suportados.
+- **`nftables_backup: true`** — O bloco de aplicação tenta restaurar uma configuração anterior após uma falha, quando ela existir. A disponibilidade de backups e o acesso de recuperação continuam sendo requisitos operacionais.
+- O [template](../../../roles/nftables/templates/nftables.conf.j2) e os [valores padrão](../../../roles/firewall/defaults/main.yml) definem os campos de política suportados.
 
 A coleção empacota `firewall`, `policy` e `nftables`; apenas `nftables` implementa um backend de firewall. Os nomes de backend para iptables e firewalld são aceitos pela validação de política, mas nenhuma role de backend correspondente é distribuída aqui. Uma regra SSH no template não garante proteção contra bloqueio de acesso. O modo somente validação ainda instala pacotes e executa tarefas de configuração/serviço; não se trata de uma simulação (dry run) livre de efeitos colaterais.
 
@@ -57,7 +57,7 @@ O nome do arquivo segue a versão definida em [galaxy.yml](../../../galaxy.yml).
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Substitua pela rede do seu escritório (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

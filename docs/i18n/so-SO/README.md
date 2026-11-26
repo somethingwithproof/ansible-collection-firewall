@@ -25,8 +25,8 @@ Ururinta Ansible ee lagu qeexo siyaasadda derbiga-dabka (firewall) ee martigeliy
 
 - [firewall](../../../roles/firewall/tasks/main.yml) wuxuu maamulaa qiimayaasha caadiga ah ee dadweynaha iyo xaqiijinta nidaamka dambe (backend); [policy](../../../roles/policy/tasks/main.yml) wuxuu ilaaliyaa barta gelitaanka ee hore isagoo soo dejinaya.
 - [nftables](../../../roles/nftables/tasks/main.yml) wuxuu rakibaa nftables, diyaariyaa habaynta, ku xaqiijiyaa `nft -c -f`, wuxuuna ku hirgeliyaa `nft -f`.
-- Qaybta hirgelintu waxay isku daydaa inay soo celiso habayntii hore haddii fashil dhaco marka mid hore jirtay. Helitaanka nuqul-kaydinta iyo marinka soo-kabashada waxay sii ahaanayaan shuruudo hawlgal.
-- [Qaab-dhismeedka](../../../roles/nftables/templates/nftables.conf.j2) iyo [qiimayaasha caadiga ah](../../../roles/policy/defaults/main.yml) waxay qeexaan meelaha siyaasadda ee la taageero.
+- **`nftables_backup: true`** — Qaybta hirgelintu waxay isku daydaa inay soo celiso habayntii hore haddii fashil dhaco marka mid hore jirtay. Helitaanka nuqul-kaydinta iyo marinka soo-kabashada waxay sii ahaanayaan shuruudo hawlgal.
+- [Qaab-dhismeedka](../../../roles/nftables/templates/nftables.conf.j2) iyo [qiimayaasha caadiga ah](../../../roles/firewall/defaults/main.yml) waxay qeexaan meelaha siyaasadda ee la taageero.
 
 Ururintu waxay xirmaysaa `firewall`, `policy`, iyo `nftables`; kaliya `nftables` ayaa hirgeliya nidaamka dambe ee derbiga-dabka. Magacyada nidaamka dambe ee iptables iyo firewalld waa la aqbalaa marka la xaqiijinayo siyaasadda, laakiin wax doorar nidaam dambe ah oo u dhigma laguma soo darin halkan. Xeerka SSH ee ku jira qaab-dhismeedku ma aha dammaanad ka dhan ah xidhitaanka gelitaanka. Habka xaqiijinta-kaliya weli wuxuu rakibaa xirmooyinka wuxuuna fuliyaa hawlaha habaynta iyo adeegga; ma aha tijaabo qallalan oo aan wax saamayn ah lahayn.
 
@@ -57,7 +57,7 @@ Magaca faylku wuxuu raacaa nooca ku jira [galaxy.yml](../../../galaxy.yml). Isti
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Ku beddel shabakadda xafiiskaaga (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

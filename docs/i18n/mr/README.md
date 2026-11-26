@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) सार्वजनिक डीफॉल्ट्स आणि बॅकएंड पडताळणी हाताळते; [policy](../../../roles/policy/tasks/main.yml) ते इम्पोर्ट करून जुना एंट्री पॉइंट कायम ठेवते.
 - [nftables](../../../roles/nftables/tasks/main.yml) nftables इन्स्टॉल करते, कॉन्फिगरेशन स्टेज करते, `nft -c -f` वापरून त्याची वैधता तपासते आणि `nft -f` वापरून ते लागू करते.
-- आधीचे कॉन्फिगरेशन अस्तित्वात असल्यास, apply ब्लॉक अयशस्वी झाल्यानंतर ते पुनर्संचयित करण्याचा प्रयत्न करतो. बॅकअपची उपलब्धता आणि रिकव्हरी अ‍ॅक्सेस या ऑपरेशनल आवश्यकता कायम राहतात.
-- [टेम्प्लेट](../../../roles/nftables/templates/nftables.conf.j2) आणि [डीफॉल्ट्स](../../../roles/policy/defaults/main.yml) समर्थित धोरण फील्ड्स परिभाषित करतात.
+- **`nftables_backup: true`** — आधीचे कॉन्फिगरेशन अस्तित्वात असल्यास, apply ब्लॉक अयशस्वी झाल्यानंतर ते पुनर्संचयित करण्याचा प्रयत्न करतो. बॅकअपची उपलब्धता आणि रिकव्हरी अ‍ॅक्सेस या ऑपरेशनल आवश्यकता कायम राहतात.
+- [टेम्प्लेट](../../../roles/nftables/templates/nftables.conf.j2) आणि [डीफॉल्ट्स](../../../roles/firewall/defaults/main.yml) समर्थित धोरण फील्ड्स परिभाषित करतात.
 
 या कलेक्शनमध्ये `firewall`, `policy`, आणि `nftables` समाविष्ट आहेत; फक्त `nftables` फायरवॉल बॅकएंडची अंमलबजावणी करते. iptables आणि firewalld साठी बॅकएंड नावे धोरण पडताळणीमध्ये स्वीकारली जातात, परंतु त्यासंबंधित कोणतेही बॅकएंड रोल्स येथे दिलेले नाहीत. टेम्प्लेटमधील SSH नियम लॉकआउट होणार नाही याची हमी देत नाही. फक्त-पडताळणी (validate-only) मोडमध्येही पॅकेजेस इन्स्टॉल केली जातात आणि कॉन्फिगरेशन/सर्व्हिस टास्क्स पार पाडली जातात; ते साइड-इफेक्ट-मुक्त ड्राय रन नाही.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # तुमच्या कार्यालयाच्या नेटवर्कने बदला (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

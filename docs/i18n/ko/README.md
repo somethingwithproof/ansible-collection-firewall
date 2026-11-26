@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml)은 공개 기본값과 백엔드 검증을 담당하며, [policy](../../../roles/policy/tasks/main.yml)는 이를 가져와 레거시 진입점을 유지합니다.
 - [nftables](../../../roles/nftables/tasks/main.yml)는 nftables를 설치하고, 구성을 스테이징한 뒤 `nft -c -f`로 검증하고 `nft -f`로 적용합니다.
-- 적용 블록은 실패 시 이전 구성이 존재했던 경우 이를 복원하려고 시도합니다. 백업 가용성과 복구 접근 경로 확보는 운영상 필수 요건으로 남아 있습니다.
-- 지원되는 정책 필드는 [템플릿](../../../roles/nftables/templates/nftables.conf.j2)과 [기본값](../../../roles/policy/defaults/main.yml)에 정의되어 있습니다.
+- **`nftables_backup: true`** — 적용 블록은 실패 시 이전 구성이 존재했던 경우 이를 복원하려고 시도합니다. 백업 가용성과 복구 접근 경로 확보는 운영상 필수 요건으로 남아 있습니다.
+- 지원되는 정책 필드는 [템플릿](../../../roles/nftables/templates/nftables.conf.j2)과 [기본값](../../../roles/firewall/defaults/main.yml)에 정의되어 있습니다.
 
 이 컬렉션은 `firewall`, `policy`, `nftables`를 패키징하며, 이 중 `nftables`만 방화벽 백엔드를 구현합니다. 정책 검증에서는 iptables와 firewalld 백엔드 이름도 허용하지만, 이에 해당하는 백엔드 역할은 여기에 포함되어 있지 않습니다. 템플릿에 포함된 SSH 규칙이 잠금(lockout)을 완전히 방지해 주지는 않습니다. 검증 전용(validate-only) 모드에서도 패키지를 설치하고 구성 및 서비스 작업을 수행하므로 부작용 없는 드라이 런이 아닙니다.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # 실제 사무실 네트워크로 바꾸세요 (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

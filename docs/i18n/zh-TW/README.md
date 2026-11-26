@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) 負責公開預設值與後端驗證；[policy](../../../roles/policy/tasks/main.yml) 透過匯入該角色來保留舊版進入點。
 - [nftables](../../../roles/nftables/tasks/main.yml) 負責安裝 nftables、暫存設定檔、使用 `nft -c -f` 進行驗證，並使用 `nft -f` 套用設定。
-- 若先前已存在設定檔，套用區塊會在失敗後嘗試還原舊有設定。備份可用性與復原存取路徑仍屬於維運需求。
-- [範本](../../../roles/nftables/templates/nftables.conf.j2)與[預設值](../../../roles/policy/defaults/main.yml)定義了支援的政策欄位。
+- **`nftables_backup: true`** — 若先前已存在設定檔，套用區塊會在失敗後嘗試還原舊有設定。備份可用性與復原存取路徑仍屬於維運需求。
+- [範本](../../../roles/nftables/templates/nftables.conf.j2)與[預設值](../../../roles/firewall/defaults/main.yml)定義了支援的政策欄位。
 
 本 collection 封裝了 `firewall`、`policy` 與 `nftables`；其中僅 `nftables` 實作了防火牆後端。政策驗證雖然接受 iptables 與 firewalld 的後端名稱，但此處並未隨附對應的後端角色。範本中的 SSH 規則不保證能避免遭到鎖定。僅驗證模式（validate-only mode）仍會安裝套件並執行設定／服務工作，並非無副作用的模擬執行（dry run）。
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # 請替換為實際的辦公網路 (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

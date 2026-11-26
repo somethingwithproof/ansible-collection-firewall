@@ -25,8 +25,8 @@
 
 - يتولى الدور [firewall](../../../roles/firewall/tasks/main.yml) الإعدادات الافتراضية العامة والتحقق من الواجهة الخلفية؛ ويحافظ الدور [policy](../../../roles/policy/tasks/main.yml) على نقطة الدخول القديمة من خلال استيراده.
 - يثبّت الدور [nftables](../../../roles/nftables/tasks/main.yml) حزمة nftables، ويجهّز التهيئة مرحلياً، ويتحقق من صحتها باستخدام `nft -c -f`، ثم يطبّقها باستخدام `nft -f`.
-- تحاول كتلة التطبيق استعادة التهيئة السابقة عند حدوث فشل في حال وجودها. ويظل توفر النسخ الاحتياطية والوصول للاسترداد من المتطلبات التشغيلية.
-- يحدّد [القالب](../../../roles/nftables/templates/nftables.conf.j2) و[الإعدادات الافتراضية](../../../roles/policy/defaults/main.yml) حقول السياسة المدعومة.
+- **`nftables_backup: true`** — تحاول كتلة التطبيق استعادة التهيئة السابقة عند حدوث فشل في حال وجودها. ويظل توفر النسخ الاحتياطية والوصول للاسترداد من المتطلبات التشغيلية.
+- يحدّد [القالب](../../../roles/nftables/templates/nftables.conf.j2) و[الإعدادات الافتراضية](../../../roles/firewall/defaults/main.yml) حقول السياسة المدعومة.
 
 تتضمن المجموعة الأدوار `firewall` و`policy` و`nftables`؛ ولا ينفّذ واجهةً خلفية لجدار الحماية سوى `nftables`. يقبل التحقق من السياسة أسماء الواجهات الخلفية لكل من iptables وfirewalld، لكن لا توجد أدوار خلفية مقابلة مرفقة هنا. وجود قاعدة SSH في القالب لا يضمن عدم فقدان الوصول. ولا يزال وضع التحقق فقط يثبّت الحزم وينفّذ مهام التهيئة والخدمات؛ أي إنه ليس تشغيلاً تجريبياً خالياً من الآثار الجانبية.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # استبدلها بشبكة مكتبك (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

@@ -25,8 +25,8 @@ Mkusanyiko wa Ansible wa kufafanua sera ya firewall ya mashine mwenyeji na kutum
 
 - [firewall](../../../roles/firewall/tasks/main.yml) inasimamia mipangilio ya awali ya umma na uthibitishaji wa backend; [policy](../../../roles/policy/tasks/main.yml) huhifadhi njia ya awali ya kuingilia kwa kuiingiza.
 - [nftables](../../../roles/nftables/tasks/main.yml) husakinisha nftables, huandaa usanidi kwa hatua, huuthibitisha kwa `nft -c -f`, na kuutekeleza kwa `nft -f`.
-- Sehemu ya utekelezaji hujaribu kurejesha usanidi wa awali baada ya hitilafu iwapo ulikuwepo. Upatikanaji wa nakala rudufu na ufikiaji wa uokoaji hubaki kuwa mahitaji ya uendeshaji.
-- [Kiolezo](../../../roles/nftables/templates/nftables.conf.j2) na [mipangilio ya awali](../../../roles/policy/defaults/main.yml) hufafanua sehemu za sera zinazotumika.
+- **`nftables_backup: true`** — Sehemu ya utekelezaji hujaribu kurejesha usanidi wa awali baada ya hitilafu iwapo ulikuwepo. Upatikanaji wa nakala rudufu na ufikiaji wa uokoaji hubaki kuwa mahitaji ya uendeshaji.
+- [Kiolezo](../../../roles/nftables/templates/nftables.conf.j2) na [mipangilio ya awali](../../../roles/firewall/defaults/main.yml) hufafanua sehemu za sera zinazotumika.
 
 Mkusanyiko huu unajumuisha `firewall`, `policy`, na `nftables`; ni `nftables` pekee inayotekeleza backend ya firewall. Majina ya backend ya iptables na firewalld yanakubaliwa na uthibitishaji wa sera, lakini hakuna roles husika za backend zinazotolewa hapa. Kanuni ya SSH katika kiolezo si dhamana dhidi ya kufungiwa nje. Hali ya uthibitishaji pekee bado husakinisha vifurushi na kutekeleza kazi za usanidi/huduma; si jaribio lisilo na athari.
 
@@ -57,7 +57,7 @@ Jina la faili hufuata toleo lililo katika [galaxy.yml](../../../galaxy.yml). Tum
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Badilisha na mtandao wa ofisi yako (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

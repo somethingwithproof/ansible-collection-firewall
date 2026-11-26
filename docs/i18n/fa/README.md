@@ -25,8 +25,8 @@
 
 - نقش [firewall](../../../roles/firewall/tasks/main.yml) مسئول مقادیر پیش‌فرض عمومی و اعتبارسنجی بک‌اند است؛ نقش [policy](../../../roles/policy/tasks/main.yml) نقطه ورود قدیمی را با وارد کردن آن حفظ می‌کند.
 - نقش [nftables](../../../roles/nftables/tasks/main.yml) بسته nftables را نصب می‌کند، پیکربندی را آماده‌سازی می‌کند، آن را با `nft -c -f` اعتبارسنجی کرده و با `nft -f` اعمال می‌کند.
-- بلوک اعمال (apply) در صورت بروز خطا تلاش می‌کند پیکربندی قبلی را، در صورت وجود، بازیابی کند. در دسترس بودن نسخه پشتیبان و دسترسی بازیابی همچنان از الزامات عملیاتی هستند.
-- [قالب](../../../roles/nftables/templates/nftables.conf.j2) و [مقادیر پیش‌فرض](../../../roles/policy/defaults/main.yml) فیلدهای پشتیبانی‌شده سیاست را تعریف می‌کنند.
+- **`nftables_backup: true`** — بلوک اعمال (apply) در صورت بروز خطا تلاش می‌کند پیکربندی قبلی را، در صورت وجود، بازیابی کند. در دسترس بودن نسخه پشتیبان و دسترسی بازیابی همچنان از الزامات عملیاتی هستند.
+- [قالب](../../../roles/nftables/templates/nftables.conf.j2) و [مقادیر پیش‌فرض](../../../roles/firewall/defaults/main.yml) فیلدهای پشتیبانی‌شده سیاست را تعریف می‌کنند.
 
 این مجموعه شامل نقش‌های `firewall`، `policy` و `nftables` است؛ تنها `nftables` یک بک‌اند فایروال را پیاده‌سازی می‌کند. نام بک‌اندهای iptables و firewalld در اعتبارسنجی سیاست پذیرفته می‌شوند، اما هیچ نقش بک‌اند متناظری در اینجا ارائه نشده است. وجود یک قانون SSH در قالب، تضمینی در برابر قفل شدن دسترسی نیست. حالت فقط‌اعتبارسنجی (validate-only) همچنان بسته‌ها را نصب می‌کند و وظایف پیکربندی/سرویس را انجام می‌دهد؛ این حالت یک اجرای آزمایشی بدون اثر جانبی (dry run) نیست.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # با شبکهٔ دفتر خود جایگزین کنید (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

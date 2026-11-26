@@ -25,8 +25,8 @@ Ana bilgisayar güvenlik duvarı politikasını tanımlamak ve nftables yapılan
 
 - [firewall](../../../roles/firewall/tasks/main.yml) genel varsayılanları ve arka uç doğrulamasını yönetir; [policy](../../../roles/policy/tasks/main.yml) bunu içe aktararak eski giriş noktasını korur.
 - [nftables](../../../roles/nftables/tasks/main.yml) nftables paketini kurar, yapılandırmayı hazırlar, `nft -c -f` ile doğrular ve `nft -f` ile uygular.
-- Uygulama bloğu, bir hata oluştuğunda mevcutsa önceki yapılandırmayı geri yüklemeye çalışır. Yedeklerin erişilebilirliği ve kurtarma erişimi operasyonel gereksinimler olarak kalır.
-- [şablon](../../../roles/nftables/templates/nftables.conf.j2) ve [varsayılanlar](../../../roles/policy/defaults/main.yml) desteklenen politika alanlarını tanımlar.
+- **`nftables_backup: true`** — Uygulama bloğu, bir hata oluştuğunda mevcutsa önceki yapılandırmayı geri yüklemeye çalışır. Yedeklerin erişilebilirliği ve kurtarma erişimi operasyonel gereksinimler olarak kalır.
+- [şablon](../../../roles/nftables/templates/nftables.conf.j2) ve [varsayılanlar](../../../roles/firewall/defaults/main.yml) desteklenen politika alanlarını tanımlar.
 
 Koleksiyon `firewall`, `policy` ve `nftables` rollerini paketler; yalnızca `nftables` bir güvenlik duvarı arka ucu uygular. iptables ve firewalld için arka uç adları politika doğrulaması tarafından kabul edilir, ancak bunlara karşılık gelen arka uç rolleri burada sunulmaz. Şablondaki bir SSH kuralı, sistemden kilitlenmeye karşı bir garanti değildir. Yalnızca doğrulama modu yine de paketleri kurar ve yapılandırma/servis görevlerini yürütür; yan etkisiz bir deneme çalıştırması değildir.
 
@@ -57,7 +57,7 @@ Dosya adı [galaxy.yml](../../../galaxy.yml) dosyasındaki sürümü izler. Bu s
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Kendi ofis ağınızla değiştirin (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

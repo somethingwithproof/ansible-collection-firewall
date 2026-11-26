@@ -25,8 +25,8 @@ Eine Ansible-Collection zum Beschreiben von Host-Firewall-Richtlinien und zum An
 
 - [firewall](../../../roles/firewall/tasks/main.yml) verwaltet die öffentlichen Standardwerte und die Backend-Validierung; [policy](../../../roles/policy/tasks/main.yml) erhält den Legacy-Einstiegspunkt durch dessen Import.
 - [nftables](../../../roles/nftables/tasks/main.yml) installiert nftables, stellt die Konfiguration bereit, validiert sie mit `nft -c -f` und wendet sie mit `nft -f` an.
-- Der Apply-Block versucht nach einem Fehler, eine zuvor vorhandene Konfiguration wiederherzustellen. Die Verfügbarkeit von Backups und ein Wiederherstellungszugang bleiben betriebliche Voraussetzungen.
-- Die [Vorlage](../../../roles/nftables/templates/nftables.conf.j2) und die [Standardwerte](../../../roles/policy/defaults/main.yml) definieren die unterstützten Richtlinienfelder.
+- **`nftables_backup: true`** — Der Apply-Block versucht nach einem Fehler, eine zuvor vorhandene Konfiguration wiederherzustellen. Die Verfügbarkeit von Backups und ein Wiederherstellungszugang bleiben betriebliche Voraussetzungen.
+- Die [Vorlage](../../../roles/nftables/templates/nftables.conf.j2) und die [Standardwerte](../../../roles/firewall/defaults/main.yml) definieren die unterstützten Richtlinienfelder.
 
 Die Collection paketiert `firewall`, `policy` und `nftables`; nur `nftables` implementiert ein Firewall-Backend. Backend-Namen für iptables und firewalld werden von der Richtlinienvalidierung akzeptiert, entsprechende Backend-Rollen sind hier jedoch nicht enthalten. Eine SSH-Regel in der Vorlage ist keine Garantie gegen eine Aussperrung. Der reine Validierungsmodus installiert dennoch Pakete und führt Konfigurations- und Dienstaufgaben aus; er ist kein nebenwirkungsfreier Probelauf.
 
@@ -57,7 +57,7 @@ Der Dateiname richtet sich nach der Version in [galaxy.yml](../../../galaxy.yml)
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Durch das eigene Büronetz ersetzen (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

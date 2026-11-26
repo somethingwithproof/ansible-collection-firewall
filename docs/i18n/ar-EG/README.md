@@ -25,8 +25,8 @@
 
 - دور [firewall](../../../roles/firewall/tasks/main.yml) مسؤول عن الإعدادات الافتراضية العامة والتحقق من الـ backend؛ ودور [policy](../../../roles/policy/tasks/main.yml) بيحافظ على نقطة الدخول القديمة عن طريق استيراده.
 - دور [nftables](../../../roles/nftables/tasks/main.yml) بيثبّت nftables، وبيجهّز ملف الإعدادات، وبيتحقق منه بـ `nft -c -f`، وبيطبّقه بـ `nft -f`.
-- بلوك التطبيق بيحاول يرجّع الإعدادات السابقة بعد أي فشل لو كانت موجودة قبل كده. توفر النسخ الاحتياطية وطريقة الاسترداد لسه متطلبات تشغيلية أساسية.
-- [القالب](../../../roles/nftables/templates/nftables.conf.j2) و[الإعدادات الافتراضية](../../../roles/policy/defaults/main.yml) بيحددوا حقول السياسة المدعومة.
+- **`nftables_backup: true`** — بلوك التطبيق بيحاول يرجّع الإعدادات السابقة بعد أي فشل لو كانت موجودة قبل كده. توفر النسخ الاحتياطية وطريقة الاسترداد لسه متطلبات تشغيلية أساسية.
+- [القالب](../../../roles/nftables/templates/nftables.conf.j2) و[الإعدادات الافتراضية](../../../roles/firewall/defaults/main.yml) بيحددوا حقول السياسة المدعومة.
 
 المجموعة فيها أدوار `firewall` و`policy` و`nftables`؛ لكن `nftables` بس هو اللي بينفّذ backend للـ firewall. أسماء الـ backend بتاعة iptables وfirewalld مقبولة في التحقق من السياسة، بس مفيش أدوار backend مقابلة ليهم موجودة هنا. وجود قاعدة SSH في القالب مش ضمان ضد قفل الوصول (lockout). وضع التحقق بس (validate-only) لسه بيثبّت حزم وبينفّذ مهام إعدادات وخدمات؛ يعني مش تشغيل تجريبي من غير أي تأثير جانبي.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # استبدلها بشبكة مكتبك (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

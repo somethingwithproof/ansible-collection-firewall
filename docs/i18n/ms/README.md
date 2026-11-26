@@ -25,8 +25,8 @@ Koleksi Ansible untuk memerihalkan dasar tembok api hos dan menggunakan konfigur
 
 - [firewall](../../../roles/firewall/tasks/main.yml) mengurus nilai lalai awam dan pengesahan bahagian belakang; [policy](../../../roles/policy/tasks/main.yml) mengekalkan titik masuk legasi dengan mengimportnya.
 - [nftables](../../../roles/nftables/tasks/main.yml) memasang nftables, menyediakan konfigurasi sementara, mengesahkannya dengan `nft -c -f`, dan menerapkannya dengan `nft -f`.
-- Blok penerapan cuba memulihkan konfigurasi terdahulu selepas kegagalan apabila konfigurasi tersebut wujud. Ketersediaan sandaran dan akses pemulihan kekal menjadi keperluan operasi.
-- [Templat](../../../roles/nftables/templates/nftables.conf.j2) dan [nilai lalai](../../../roles/policy/defaults/main.yml) mentakrifkan medan dasar yang disokong.
+- **`nftables_backup: true`** — Blok penerapan cuba memulihkan konfigurasi terdahulu selepas kegagalan apabila konfigurasi tersebut wujud. Ketersediaan sandaran dan akses pemulihan kekal menjadi keperluan operasi.
+- [Templat](../../../roles/nftables/templates/nftables.conf.j2) dan [nilai lalai](../../../roles/firewall/defaults/main.yml) mentakrifkan medan dasar yang disokong.
 
 Koleksi ini mempakejkan `firewall`, `policy`, dan `nftables`; hanya `nftables` yang melaksanakan bahagian belakang tembok api. Nama bahagian belakang untuk iptables dan firewalld diterima oleh pengesahan dasar, tetapi tiada peranan bahagian belakang yang sepadan disertakan di sini. Peraturan SSH dalam templat bukanlah jaminan terhadap keadaan terkunci keluar. Mod sahkan-sahaja masih memasang pakej dan melaksanakan tugas konfigurasi/perkhidmatan; ia bukanlah larian percubaan tanpa kesan sampingan.
 
@@ -57,7 +57,7 @@ Nama fail mengikut versi dalam [galaxy.yml](../../../galaxy.yml). Gunakan nama f
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Gantikan dengan rangkaian pejabat anda (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

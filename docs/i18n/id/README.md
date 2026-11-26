@@ -25,8 +25,8 @@ Koleksi Ansible untuk mendeskripsikan kebijakan firewall host dan menerapkan kon
 
 - [firewall](../../../roles/firewall/tasks/main.yml) mengelola nilai default publik dan validasi backend; [policy](../../../roles/policy/tasks/main.yml) mempertahankan titik masuk lama dengan mengimpornya.
 - [nftables](../../../roles/nftables/tasks/main.yml) memasang nftables, menyiapkan konfigurasi sementara, memvalidasinya dengan `nft -c -f`, dan menerapkannya dengan `nft -f`.
-- Blok penerapan berupaya memulihkan konfigurasi sebelumnya setelah terjadi kegagalan jika konfigurasi tersebut tersedia. Ketersediaan cadangan dan akses pemulihan tetap menjadi persyaratan operasional.
-- [templat](../../../roles/nftables/templates/nftables.conf.j2) dan [nilai default](../../../roles/policy/defaults/main.yml) mendefinisikan kolom kebijakan yang didukung.
+- **`nftables_backup: true`** — Blok penerapan berupaya memulihkan konfigurasi sebelumnya setelah terjadi kegagalan jika konfigurasi tersebut tersedia. Ketersediaan cadangan dan akses pemulihan tetap menjadi persyaratan operasional.
+- [templat](../../../roles/nftables/templates/nftables.conf.j2) dan [nilai default](../../../roles/firewall/defaults/main.yml) mendefinisikan kolom kebijakan yang didukung.
 
 Koleksi ini memaketkan `firewall`, `policy`, dan `nftables`; hanya `nftables` yang mengimplementasikan backend firewall. Nama backend untuk iptables dan firewalld diterima oleh validasi kebijakan, tetapi tidak ada peran backend terkait yang disertakan di sini. Aturan SSH di dalam templat bukan jaminan untuk mencegah terkuncinya akses. Mode validasi saja tetap memasang paket dan menjalankan tugas konfigurasi/layanan; mode ini bukan dry run tanpa efek samping.
 
@@ -57,7 +57,7 @@ Nama berkas mengikuti versi di [galaxy.yml](../../../galaxy.yml). Gunakan nama b
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Ganti dengan jaringan kantor Anda (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

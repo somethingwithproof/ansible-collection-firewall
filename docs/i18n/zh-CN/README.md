@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) 负责公开的默认配置和后端验证；[policy](../../../roles/policy/tasks/main.yml) 通过导入前者保留旧版入口点。
 - [nftables](../../../roles/nftables/tasks/main.yml) 负责安装 nftables、暂存配置文件、使用 `nft -c -f` 进行验证，并使用 `nft -f` 应用配置。
-- 如果存在先前的配置，应用代码块会在失败后尝试恢复该配置。备份可用性和恢复访问路径仍然是运维要求。
-- [模板](../../../roles/nftables/templates/nftables.conf.j2) 和 [默认配置](../../../roles/policy/defaults/main.yml) 定义了支持的策略字段。
+- **`nftables_backup: true`** — 如果存在先前的配置，应用代码块会在失败后尝试恢复该配置。备份可用性和恢复访问路径仍然是运维要求。
+- [模板](../../../roles/nftables/templates/nftables.conf.j2) 和 [默认配置](../../../roles/firewall/defaults/main.yml) 定义了支持的策略字段。
 
 本集合打包了 `firewall`、`policy` 和 `nftables`；仅 `nftables` 实现了防火墙后端。策略验证接受 iptables 和 firewalld 的后端名称，但此处未提供对应的后端角色。模板中的 SSH 规则并不能保证防止锁定。仅验证模式仍然会安装软件包并执行配置/服务任务；它并非无副作用的空运行。
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # 替换为实际的办公网络 (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

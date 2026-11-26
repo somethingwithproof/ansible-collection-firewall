@@ -25,8 +25,8 @@ Angona Ansible natao hamaritana ny politikan'ny aro-afo (firewall) amin'ny mpamp
 
 - Ny [firewall](../../../roles/firewall/tasks/main.yml) no mitantana ny soatoavina fototra ho an'ny daholobe sy ny fanamarinana ny backend; ny [policy](../../../roles/policy/tasks/main.yml) dia mitahiry ny teboka fidirana teo aloha amin'ny alalan'ny fanafarana azy.
 - Ny [nftables](../../../roles/nftables/tasks/main.yml) dia mametraka ny nftables, manomana ny fandrindrana, manamarina azy amin'ny `nft -c -f`, ary mampihatra azy amin'ny `nft -f`.
-- Ny vondron'asa fampiharana dia manandrana mamerina ny fandrindrana teo aloha rehefa misy tsy fahombiazana raha nisy izany. Ny fisian'ny tahiry fiarovana (backup) sy ny fidirana fanarenana dia mijanona ho fepetra ilaina amin'ny fampiasana.
-- Ny [modely](../../../roles/nftables/templates/nftables.conf.j2) sy ny [soatoavina fototra](../../../roles/policy/defaults/main.yml) no mamaritra ny sahan-politika tohanana.
+- **`nftables_backup: true`** — Ny vondron'asa fampiharana dia manandrana mamerina ny fandrindrana teo aloha rehefa misy tsy fahombiazana raha nisy izany. Ny fisian'ny tahiry fiarovana (backup) sy ny fidirana fanarenana dia mijanona ho fepetra ilaina amin'ny fampiasana.
+- Ny [modely](../../../roles/nftables/templates/nftables.conf.j2) sy ny [soatoavina fototra](../../../roles/firewall/defaults/main.yml) no mamaritra ny sahan-politika tohanana.
 
 Misy anjara asa `firewall`, `policy`, ary `nftables` ao anatin'ity angona ity; ny `nftables` ihany no mampihatra backend aro-afo. Eken'ny fanamarinana politika ny anaran'ny backend ho an'ny iptables sy firewalld, saingy tsy misy anjara asa backend mifanaraka amin'izany aterina ato. Ny fitsipika SSH ao amin'ny modely dia tsy antoka fa tsy ho voahidy ivelany ianao. Ny fomba fanamarinana fotsiny (validate-only) dia mbola mametraka fonosana sy manatanteraka asam-pandrindrana/tolotra; tsy fitsapana tsy misy fiantraikany (dry run) izany.
 
@@ -57,7 +57,7 @@ Manaraka ny dika ao amin'ny [galaxy.yml](../../../galaxy.yml) ny anaran'ny rakit
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Soloy ny tambajotran’ny biraonao (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

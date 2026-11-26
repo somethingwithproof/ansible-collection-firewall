@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) אחראי על ערכי ברירת המחדל הציבוריים ועל אימות המנוע האחורי; [policy](../../../roles/policy/tasks/main.yml) משמר את נקודת הכניסה הישנה על ידי ייבוא שלו.
 - [nftables](../../../roles/nftables/tasks/main.yml) מתקין את nftables, מכין את התצורה בשלב ביניים, מאמת אותה באמצעות `nft -c -f` ומחיל אותה באמצעות `nft -f`.
-- בלוק ההחלה מנסה לשחזר תצורה קודמת לאחר כשל כאשר קיימת כזו. זמינות גיבויים וגישת שחזור נותרות דרישות תפעוליות.
-- [התבנית](../../../roles/nftables/templates/nftables.conf.j2) ו[ברירות המחדל](../../../roles/policy/defaults/main.yml) מגדירים את שדות המדיניות הנתמכים.
+- **`nftables_backup: true`** — בלוק ההחלה מנסה לשחזר תצורה קודמת לאחר כשל כאשר קיימת כזו. זמינות גיבויים וגישת שחזור נותרות דרישות תפעוליות.
+- [התבנית](../../../roles/nftables/templates/nftables.conf.j2) ו[ברירות המחדל](../../../roles/firewall/defaults/main.yml) מגדירים את שדות המדיניות הנתמכים.
 
 האוסף אורז את `firewall`, `policy` ו-`nftables`; רק `nftables` מממש מנוע אחורי של חומת אש. שמות מנועים אחוריים עבור iptables ו-firewalld מתקבלים באימות המדיניות, אך לא מסופקים כאן תפקידים תואמים למנועים אלה. חוק SSH בתבנית אינו מהווה ערובה מפני נעילה מחוץ לשרת. מצב אימות בלבד עדיין מתקין חבילות ומבצע משימות תצורה ושירות; הוא אינו הרצת ניסיון (dry run) ללא תופעות לוואי.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # החליפו ברשת המשרד שלכם (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

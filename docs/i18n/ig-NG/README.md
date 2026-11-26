@@ -25,8 +25,8 @@ Mkpokọta Ansible maka ịkọwa atụmatụ firewall nke host na itinye nhazi 
 
 - [firewall](../../../roles/firewall/tasks/main.yml) nwe ntọala ndabara ọha na nnyocha nke backend; [policy](../../../roles/policy/tasks/main.yml) na-echekwa ebe mbanye ochie site n'ibubata ya.
 - [nftables](../../../roles/nftables/tasks/main.yml) na-awụnye nftables, na-akwado nhazi, na-enyocha ya site na `nft -c -f`, ma na-etinye ya n'ọrụ site na `nft -f`.
-- Ngalaba ntinye n'ọrụ na-anwa iweghachi nhazi gara aga mgbe ọdịda mere ma ọ bụrụ na otu dịbu. Ịdị njikere nke nchekwa ndabere na ụzọ mgbake ka bụ ihe a chọrọ n'ọrụ.
-- [Ndebiri](../../../roles/nftables/templates/nftables.conf.j2) na [ntọala ndabara](../../../roles/policy/defaults/main.yml) na-akọwa ngalaba atụmatụ ndị a kwadoro.
+- **`nftables_backup: true`** — Ngalaba ntinye n'ọrụ na-anwa iweghachi nhazi gara aga mgbe ọdịda mere ma ọ bụrụ na otu dịbu. Ịdị njikere nke nchekwa ndabere na ụzọ mgbake ka bụ ihe a chọrọ n'ọrụ.
+- [Ndebiri](../../../roles/nftables/templates/nftables.conf.j2) na [ntọala ndabara](../../../roles/firewall/defaults/main.yml) na-akọwa ngalaba atụmatụ ndị a kwadoro.
 
 Mkpokọta a na-akwakọ `firewall`, `policy`, na `nftables`; naanị `nftables` na-emejupụta backend nke firewall. Nnyocha atụmatụ na-anabata aha backend maka iptables na firewalld, mana enweghị ọrụ backend dabara adaba e tinyere ebe a. Iwu SSH dị na ndebiri ahụ abụghị nkwa megide mkpọchi. Ọnọdụ nnyocha naanị ka na-awụnye ngwugwu ma na-arụ ọrụ nhazi/ọrụ usoro; ọ bụghị nnwale na-enweghị mmetụta ọ bụla.
 
@@ -57,7 +57,7 @@ Aha faịlụ ahụ na-eso ụdị dị na [galaxy.yml](../../../galaxy.yml). Ji
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Jiri netwọkụ ụlọ ọrụ gị dochie nke a (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

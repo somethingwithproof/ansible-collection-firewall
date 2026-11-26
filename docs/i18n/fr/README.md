@@ -25,8 +25,8 @@ Une collection Ansible permettant de décrire la politique de pare-feu d'un hôt
 
 - [firewall](../../../roles/firewall/tasks/main.yml) gère les valeurs par défaut publiques et la validation du backend ; [policy](../../../roles/policy/tasks/main.yml) conserve le point d'entrée historique en l'important.
 - [nftables](../../../roles/nftables/tasks/main.yml) installe nftables, prépare la configuration, la valide avec `nft -c -f` et l'applique avec `nft -f`.
-- Le bloc d'application tente de restaurer une configuration précédente après un échec lorsqu'il en existait une. La disponibilité des sauvegardes et l'accès de récupération restent des exigences opérationnelles.
-- Le [modèle](../../../roles/nftables/templates/nftables.conf.j2) et les [valeurs par défaut](../../../roles/policy/defaults/main.yml) définissent les champs de politique pris en charge.
+- **`nftables_backup: true`** — Le bloc d'application tente de restaurer une configuration précédente après un échec lorsqu'il en existait une. La disponibilité des sauvegardes et l'accès de récupération restent des exigences opérationnelles.
+- Le [modèle](../../../roles/nftables/templates/nftables.conf.j2) et les [valeurs par défaut](../../../roles/firewall/defaults/main.yml) définissent les champs de politique pris en charge.
 
 La collection regroupe `firewall`, `policy` et `nftables` ; seul `nftables` implémente un backend de pare-feu. Les noms de backends pour iptables et firewalld sont acceptés par la validation de politique, mais aucun rôle backend correspondant n'est fourni ici. Une règle SSH dans le modèle ne garantit pas l'absence de blocage d'accès. Le mode validation seule installe tout de même les paquets et exécute les tâches de configuration et de service ; ce n'est pas une simulation sans effet de bord.
 
@@ -57,7 +57,7 @@ Le nom du fichier suit la version indiquée dans [galaxy.yml](../../../galaxy.ym
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Remplacez par le réseau de votre bureau (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

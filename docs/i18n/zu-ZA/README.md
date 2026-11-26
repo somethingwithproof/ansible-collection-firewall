@@ -25,8 +25,8 @@ Iqoqo le-Ansible lokuchaza inqubomgomo ye-firewall yomshini oyisikhungo (host) n
 
 - I-[firewall](../../../roles/firewall/tasks/main.yml) iphethe izilungiselelo ezizenzakalelayo zomphakathi nokuqinisekiswa kwe-backend; i-[policy](../../../roles/policy/tasks/main.yml) igcina indawo yokungena yakudala ngokuyingenisa.
 - I-[nftables](../../../roles/nftables/tasks/main.yml) ifaka i-nftables, ilungise izilungiselelo, iziqinisekise nge-`nft -c -f`, bese izisebenzisa nge-`nft -f`.
-- Isigaba sokusebenzisa sizama ukubuyisela izilungiselelo zangaphambilini ngemuva kokwehluleka uma bezikhona. Ukutholakala kwekhophi eyisipele nokufinyelela kokubuyisela kuhlala kuyizidingo zokusebenza.
-- [Ithemphulethi](../../../roles/nftables/templates/nftables.conf.j2) kanye [nezilungiselelo ezizenzakalelayo](../../../roles/policy/defaults/main.yml) kuchaza izinkambu zenqubomgomo ezisekelwayo.
+- **`nftables_backup: true`** — Isigaba sokusebenzisa sizama ukubuyisela izilungiselelo zangaphambilini ngemuva kokwehluleka uma bezikhona. Ukutholakala kwekhophi eyisipele nokufinyelela kokubuyisela kuhlala kuyizidingo zokusebenza.
+- [Ithemphulethi](../../../roles/nftables/templates/nftables.conf.j2) kanye [nezilungiselelo ezizenzakalelayo](../../../roles/firewall/defaults/main.yml) kuchaza izinkambu zenqubomgomo ezisekelwayo.
 
 Leli qoqo lihlanganisa `firewall`, `policy`, kanye ne-`nftables`; kuphela i-`nftables` esebenza njenge-backend ye-firewall. Amagama e-backend e-iptables ne-firewalld ayamukelwa ekuqinisekisweni kwenqubomgomo, kodwa azikho izindima (roles) ezihambisanayo ze-backend ezithunyelwa lapha. Umthetho we-SSH othemphulethini awusona isiqinisekiso sokuthi ngeke uvalelwe ngaphandle. Imodi yokuqinisekisa kuphela isafaka amaphakheji futhi yenze imisebenzi yokulungiselela/yesevisi; akusona isivivinyo sokulingisa esingenamiphumela eceleni.
 
@@ -57,7 +57,7 @@ Igama lefayela lilandela inguqulo eku-[galaxy.yml](../../../galaxy.yml). Sebenzi
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Faka inethiwekhi yehhovisi lakho esikhundleni salokhu (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) ይፋዊ ነባሪዎችን እና የጀርባ አገልግሎት ማረጋገጫን ይይዛል፤ [policy](../../../roles/policy/tasks/main.yml) ደግሞ እሱን በማስገባት የቀድሞውን የመግቢያ ነጥብ ይጠብቃል።
 - [nftables](../../../roles/nftables/tasks/main.yml) nftablesን ይጭናል፣ ውቅሩን ያዘጋጃል፣ በ`nft -c -f` ያረጋግጠዋል፣ እንዲሁም በ`nft -f` ተግባራዊ ያደርገዋል።
-- የመተግበር ክፍሉ ብልሽት ሲያጋጥም ቀደም ሲል የነበረ ውቅር ካለ ወደ ቀድሞው ለመመለስ ይሞክራል። የመጠባበቂያ ቅጂ መኖር እና የመልሶ ማግኛ መዳረሻ የአሠራር መስፈርቶች ሆነው ይቀጥላሉ።
-- [አብነት](../../../roles/nftables/templates/nftables.conf.j2) እና [ነባሪዎች](../../../roles/policy/defaults/main.yml) የሚደገፉ የፖሊሲ መስኮችን ይገልጻሉ።
+- **`nftables_backup: true`** — የመተግበር ክፍሉ ብልሽት ሲያጋጥም ቀደም ሲል የነበረ ውቅር ካለ ወደ ቀድሞው ለመመለስ ይሞክራል። የመጠባበቂያ ቅጂ መኖር እና የመልሶ ማግኛ መዳረሻ የአሠራር መስፈርቶች ሆነው ይቀጥላሉ።
+- [አብነት](../../../roles/nftables/templates/nftables.conf.j2) እና [ነባሪዎች](../../../roles/firewall/defaults/main.yml) የሚደገፉ የፖሊሲ መስኮችን ይገልጻሉ።
 
 ስብስቡ `firewall`፣ `policy` እና `nftables`ን ያካትታል፤ ነገር ግን የፋየርዎል ጀርባ አገልግሎትን ተግባራዊ የሚያደርገው `nftables` ብቻ ነው። የiptables እና የfirewalld የጀርባ አገልግሎት ስሞች በፖሊሲ ማረጋገጫ ተቀባይነት አላቸው፣ ነገር ግን ተጓዳኝ የጀርባ አገልግሎት ሚናዎች እዚህ አልተካተቱም። በአብነቱ ውስጥ ያለ የSSH ሕግ ከመዳረሻ መዘጋት ዋስትና አይሰጥም። የማረጋገጫ ብቻ ሁነታ አሁንም ጥቅሎችን ይጭናል እንዲሁም የውቅር እና የአገልግሎት ተግባራትን ያከናውናል፤ ምንም የጎንዮሽ ውጤት የሌለው ደረቅ ሙከራ አይደለም።
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # በቢሮዎ አውታረ መረብ ይተኩ (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

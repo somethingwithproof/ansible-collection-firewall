@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) عوامی ڈیفالٹس اور بیک اینڈ کی توثیق کا ذمہ دار ہے؛ [policy](../../../roles/policy/tasks/main.yml) اسے امپورٹ کر کے پرانے انٹری پوائنٹ کو برقرار رکھتا ہے۔
 - [nftables](../../../roles/nftables/tasks/main.yml) nftables انسٹال کرتا ہے، کنفیگریشن کو اسٹیج کرتا ہے، `nft -c -f` سے اس کی توثیق کرتا ہے، اور `nft -f` سے اسے لاگو کرتا ہے۔
-- لاگو کرنے والا بلاک ناکامی کی صورت میں، اگر پچھلی کنفیگریشن موجود ہو تو اسے بحال کرنے کی کوشش کرتا ہے۔ بیک اپ کی دستیابی اور ریکوری رسائی بدستور آپریشنل تقاضے ہیں۔
-- [ٹیمپلیٹ](../../../roles/nftables/templates/nftables.conf.j2) اور [ڈیفالٹس](../../../roles/policy/defaults/main.yml) سپورٹ شدہ پالیسی فیلڈز کی وضاحت کرتے ہیں۔
+- **`nftables_backup: true`** — لاگو کرنے والا بلاک ناکامی کی صورت میں، اگر پچھلی کنفیگریشن موجود ہو تو اسے بحال کرنے کی کوشش کرتا ہے۔ بیک اپ کی دستیابی اور ریکوری رسائی بدستور آپریشنل تقاضے ہیں۔
+- [ٹیمپلیٹ](../../../roles/nftables/templates/nftables.conf.j2) اور [ڈیفالٹس](../../../roles/firewall/defaults/main.yml) سپورٹ شدہ پالیسی فیلڈز کی وضاحت کرتے ہیں۔
 
 یہ کلیکشن `firewall`، `policy`، اور `nftables` کو پیکیج کرتا ہے؛ صرف `nftables` فائر وال بیک اینڈ کا نفاذ کرتا ہے۔ پالیسی کی توثیق میں iptables اور firewalld کے بیک اینڈ نام قبول کیے جاتے ہیں، لیکن یہاں ان کے متعلقہ بیک اینڈ رولز فراہم نہیں کیے گئے ہیں۔ ٹیمپلیٹ میں موجود SSH رول لاک آؤٹ سے بچاؤ کی ضمانت نہیں دیتا۔ صرف توثیق (validate-only) موڈ میں بھی پیکیجز انسٹال ہوتے ہیں اور کنفیگریشن/سروس ٹاسکس انجام پاتے ہیں؛ یہ ضمنی اثرات سے پاک ڈرائی رن نہیں ہے۔
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # اسے اپنے دفتر کے نیٹ ورک سے بدلیں (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

@@ -25,8 +25,8 @@ Isang koleksiyon ng Ansible para sa paglalarawan ng patakaran ng firewall ng hos
 
 - Ang [firewall](../../../roles/firewall/tasks/main.yml) ang nagmamay-ari ng mga pampublikong default at pagpapatunay ng backend; pinananatili ng [policy](../../../roles/policy/tasks/main.yml) ang legacy entry point sa pamamagitan ng pag-import nito.
 - Ang [nftables](../../../roles/nftables/tasks/main.yml) ay nag-i-install ng nftables, naghahanda ng konfigurasyon, nagpapatunay nito gamit ang `nft -c -f`, at naglalapat nito gamit ang `nft -f`.
-- Sinusubukan ng apply block na ibalik ang nakaraang konfigurasyon pagkatapos ng isang pagkabigo kapag mayroon nito. Ang pagkakaroon ng backup at access sa pagbawi ay nananatiling mga kinakailangan sa operasyon.
-- Tinutukoy ng [template](../../../roles/nftables/templates/nftables.conf.j2) at [mga default](../../../roles/policy/defaults/main.yml) ang mga sinusuportahang field ng patakaran.
+- **`nftables_backup: true`** — Sinusubukan ng apply block na ibalik ang nakaraang konfigurasyon pagkatapos ng isang pagkabigo kapag mayroon nito. Ang pagkakaroon ng backup at access sa pagbawi ay nananatiling mga kinakailangan sa operasyon.
+- Tinutukoy ng [template](../../../roles/nftables/templates/nftables.conf.j2) at [mga default](../../../roles/firewall/defaults/main.yml) ang mga sinusuportahang field ng patakaran.
 
 Kasama sa koleksiyon ang `firewall`, `policy`, at `nftables`; tanging ang `nftables` lamang ang nagpapatupad ng backend ng firewall. Ang mga pangalan ng backend para sa iptables at firewalld ay tinatanggap ng pagpapatunay ng patakaran, ngunit walang kaukulang mga role ng backend ang kasama rito. Ang isang panuntunan ng SSH sa template ay hindi garantiya laban sa lockout. Ang validate-only mode ay nag-i-install pa rin ng mga package at nagsasagawa ng mga gawain sa konfigurasyon/serbisyo; hindi ito isang dry run na walang side effect.
 
@@ -57,7 +57,7 @@ Ang pangalan ng file ay sumusunod sa bersyon sa [galaxy.yml](../../../galaxy.yml
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Palitan ng network ng inyong opisina (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

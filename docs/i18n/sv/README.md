@@ -25,8 +25,8 @@ En Ansible-samling för att beskriva värdbrandväggspolicy och tillämpa nftabl
 
 - [firewall](../../../roles/firewall/tasks/main.yml) äger publika standardvärden och backend-validering; [policy](../../../roles/policy/tasks/main.yml) bevarar den äldre startpunkten genom att importera den.
 - [nftables](../../../roles/nftables/tasks/main.yml) installerar nftables, förbereder konfigurationen, validerar den med `nft -c -f` och tillämpar den med `nft -f`.
-- Tillämpningsblocket försöker återställa en tidigare konfiguration efter ett fel när en sådan finns. Tillgång till säkerhetskopior och återställningsåtkomst förblir driftskrav.
-- [Mallen](../../../roles/nftables/templates/nftables.conf.j2) och [standardvärdena](../../../roles/policy/defaults/main.yml) definierar policyfält som stöds.
+- **`nftables_backup: true`** — Tillämpningsblocket försöker återställa en tidigare konfiguration efter ett fel när en sådan finns. Tillgång till säkerhetskopior och återställningsåtkomst förblir driftskrav.
+- [Mallen](../../../roles/nftables/templates/nftables.conf.j2) och [standardvärdena](../../../roles/firewall/defaults/main.yml) definierar policyfält som stöds.
 
 Samlingen paketerar `firewall`, `policy` och `nftables`; endast `nftables` implementerar en brandväggsbackend. Backend-namn för iptables och firewalld accepteras av policyvalideringen, men inga motsvarande backend-roller levereras här. En SSH-regel i mallen är ingen garanti mot utelåsning. Läget för enbart validering installerar fortfarande paket och utför konfigurations- och tjänstuppgifter; det är inte en torrkörning utan sidoeffekter.
 
@@ -57,7 +57,7 @@ Filnamnet följer versionen i [galaxy.yml](../../../galaxy.yml). Använd filnamn
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Ersätt med kontorets nätverk (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

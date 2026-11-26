@@ -25,8 +25,8 @@ Một bộ sưu tập Ansible dùng để mô tả chính sách tường lửa t
 
 - [firewall](../../../roles/firewall/tasks/main.yml) quản lý các giá trị mặc định công khai và kiểm tra hợp lệ backend; [policy](../../../roles/policy/tasks/main.yml) duy trì điểm vào cũ bằng cách import vai trò này.
 - [nftables](../../../roles/nftables/tasks/main.yml) cài đặt nftables, chuẩn bị cấu hình tạm, kiểm tra hợp lệ bằng `nft -c -f` và áp dụng bằng `nft -f`.
-- Khối tác vụ áp dụng sẽ cố gắng khôi phục cấu hình trước đó sau khi xảy ra lỗi nếu đã có cấu hình cũ. Việc đảm bảo sẵn sàng bản sao lưu và quyền truy cập khôi phục vẫn là yêu cầu vận hành.
-- [Mẫu cấu hình](../../../roles/nftables/templates/nftables.conf.j2) và [giá trị mặc định](../../../roles/policy/defaults/main.yml) định nghĩa các trường chính sách được hỗ trợ.
+- **`nftables_backup: true`** — Khối tác vụ áp dụng sẽ cố gắng khôi phục cấu hình trước đó sau khi xảy ra lỗi nếu đã có cấu hình cũ. Việc đảm bảo sẵn sàng bản sao lưu và quyền truy cập khôi phục vẫn là yêu cầu vận hành.
+- [Mẫu cấu hình](../../../roles/nftables/templates/nftables.conf.j2) và [giá trị mặc định](../../../roles/firewall/defaults/main.yml) định nghĩa các trường chính sách được hỗ trợ.
 
 Bộ sưu tập này đóng gói `firewall`, `policy` và `nftables`; chỉ có `nftables` thực sự triển khai backend tường lửa. Tên backend cho iptables và firewalld vẫn được chấp nhận trong bước kiểm tra hợp lệ chính sách, nhưng không có vai trò backend tương ứng nào được cung cấp tại đây. Một quy tắc SSH trong mẫu cấu hình không đảm bảo tránh bị khóa quyền truy cập. Chế độ chỉ kiểm tra (validate-only) vẫn cài đặt các gói và thực hiện các tác vụ cấu hình/dịch vụ; đây không phải là chế độ chạy thử hoàn toàn không gây tác dụng phụ.
 
@@ -57,7 +57,7 @@ Tên tệp tuân theo phiên bản trong [galaxy.yml](../../../galaxy.yml). Hãy
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # Thay bằng mạng văn phòng của bạn (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https

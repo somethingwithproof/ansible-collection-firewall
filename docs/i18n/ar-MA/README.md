@@ -25,8 +25,8 @@
 
 - [firewall](../../../roles/firewall/tasks/main.yml) هو اللي كيتكلف بالإعدادات الافتراضية العمومية والتحقق من الـ backend؛ و[policy](../../../roles/policy/tasks/main.yml) كيحافظ على نقطة الدخول القديمة عبر الاستيراد ديالو.
 - [nftables](../../../roles/nftables/tasks/main.yml) كيثبت nftables، كيجهز الإعدادات، كيتحقق منها بـ `nft -c -f`، وكيطبقها بـ `nft -f`.
-- البلوك ديال التطبيق كيحاول يرجع الإعدادات السابقة إلى وقع شي مشكل، إلى كانت ديجا كاينة شي نسخة قديمة. توفر النسخ الاحتياطية وطريق الاسترجاع كيبقاو متطلبات تشغيلية ضرورية.
-- [القالب](../../../roles/nftables/templates/nftables.conf.j2) و[الإعدادات الافتراضية](../../../roles/policy/defaults/main.yml) كيحددو الحقول ديال السياسة المدعومة.
+- **`nftables_backup: true`** — البلوك ديال التطبيق كيحاول يرجع الإعدادات السابقة إلى وقع شي مشكل، إلى كانت ديجا كاينة شي نسخة قديمة. توفر النسخ الاحتياطية وطريق الاسترجاع كيبقاو متطلبات تشغيلية ضرورية.
+- [القالب](../../../roles/nftables/templates/nftables.conf.j2) و[الإعدادات الافتراضية](../../../roles/firewall/defaults/main.yml) كيحددو الحقول ديال السياسة المدعومة.
 
 هاد المجموعة فيها الأدوار `firewall` و`policy` و`nftables`؛ غير `nftables` بوحدو اللي فيه تنفيذ فعلي ديال backend ديال الجدار الناري. السميات ديال backends بحال iptables وfirewalld مقبولين فالتحقق ديال السياسة، ولكن ما كاينينش أدوار backend ديالهم مرفقين هنا. وجود قاعدة SSH فالقالب ماشي ضمانة ضد القفل (lockout) وفقدان الولوج. وضع التحقق بوحدو (Validate-only mode) راه باقي كيثبت الحزم وكيدير مهام الإعدادات والخدمات؛ يعني ماشي تشغيل تجريبي (dry run) بلا تأثيرات جانبية.
 
@@ -57,7 +57,7 @@ ansible-galaxy collection install ./thomasvincent-firewall-0.1.0.tar.gz
       ssh_ports: [22]
     firewall_objects:
       address_groups:
-        office: ["203.0.113.0/24"]  # TEST-NET-3 placeholder; replace with your office CIDR
+        office: ["203.0.113.0/24"]  # استبدلها بشبكة مكتبك (CIDR)
       port_groups: {}
     firewall_rules:
       - name: office-https
